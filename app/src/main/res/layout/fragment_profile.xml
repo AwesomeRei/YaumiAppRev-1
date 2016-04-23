@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:weightSum="1">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:elevation="8dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:layout_margin="8dp"
+            >
+            <ImageView
+                android:layout_weight="1"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:id="@+id/photoView"
+                android:layout_marginRight="16dp"
+                android:scaleType="centerCrop"
+                />
+            <LinearLayout
+                android:layout_weight="5"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_toRightOf="@id/photoView">
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nama"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    />
+                <TextView
+                    android:id="@+id/some"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sesuatu"
+                    android:layout_below="@+id/name"
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:id="@+id/poin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Poin"
+                    android:layout_below="@id/some"
+                    android:layout_weight="1"
+                    />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        >
+
+        <GridView
+            android:id="@+id/gridTarget"
+            android:padding="8dp"
+            android:layout_margin="8dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:numColumns="auto_fit"
+            android:gravity="center"
+            android:columnWidth="100dp"
+            android:stretchMode="columnWidth"
+            >
+
+        </GridView>
+
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
