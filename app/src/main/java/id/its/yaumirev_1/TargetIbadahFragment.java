@@ -1,44 +1,35 @@
 package id.its.yaumirev_1;
 
-import android.content.Context;
-import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.apache.http.HttpEntity;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 
 /**
@@ -69,7 +60,7 @@ public class TargetIbadahFragment extends Fragment {
     int _intMyLineCount;
 
     private ReadFileJSON myJSON;
-    private Ibadah ib;
+    private Ibadah ib ;
     private Amal amal;
     private List<Amal> amalan;
     final Gson gson= new Gson();
@@ -116,45 +107,64 @@ public class TargetIbadahFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_target_ibadah, container, false);
         listView =(ListView) rootView.findViewById(R.id.listView1);
+        FetchDataTask fetchDataTask = new FetchDataTask();
+        fetchDataTask.execute();
 
-        String url = "http://search.twitter.com/search.json?q=javacodegeeks";
+//        System.out.println(getStringFromInputStream(reader));
+        ib = new Ibadah();
+//        ib = gson.fromJson(reader, Ibadah.class);
 
-
-        try {
-            AssetManager assetManager = getActivity().getAssets();
-            InputStream ims = assetManager.open("jsonDataFetchedUntukNampilkanTarget.txt");
-            Reader reader = new InputStreamReader(ims);
-            System.out.println(reader);
-            ib = gson.fromJson(reader,Ibadah.class);
-            System.out.println(ib);
-//            for (int i = 0;i<ib.getAmals().size();i++){
-//                column[i] = ib.getAmals().get(i).getNamaamal();
-//            }
-//            amalan = readJsonStream(ims);
-
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-//        System.out.println("Ini File JSONNYA "+ loadJSONFromAsset());
-//        ib = readJsonStream(ims)
-//        System.out.print("Convered data"+ ib);
-
-//        amalan = ib.getAmals();
-
+        for (int i = 0;i<ib.getAmals().size();i++){
+                column[i] = ib.getAmals().get(i).getNamaamal();
+            }
         profile = new TargetAdapter(this.getContext(),column);
-//        System.out.println(profile);
-//        listView.setAdapter(profile);
-//        System.out.println(listView);
-//        String[] values = new String[] { "Message1", "Message2", "Message3" };
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-//                android.R.layout.simple_list_item_1, column);
-//        setListAdapter(profile);
         listView.setAdapter(profile);
 
         displayAddTarget();
         checkButtonClick();
         return rootView;
     }
+    public class FetchDataTask extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            String url = "https://api.myjson.com/bins/4mp9q";
+
+            InputStream source = retrieveStream(url);
+            Reader reader = new InputStreamReader(source);
+            ib = gson.fromJson(reader, Ibadah.class);
+
+            return null;
+        }
+    }
+    private static String getStringFromInputStream(Reader is) {
+
+        BufferedReader br = null;
+        StringBuilder sb = new StringBuilder();
+
+        String line;
+        try {
+
+            br = new BufferedReader(is);
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return sb.toString();
+    }
+
     private InputStream retrieveStream(String url) {
 
         DefaultHttpClient client = new DefaultHttpClient();
@@ -184,6 +194,7 @@ public class TargetIbadahFragment extends Fragment {
         return null;
 
     }
+
     public String loadJSONFromAsset(){
         String json = null;
 //        System.out.println(context.getAssets());
@@ -243,8 +254,7 @@ public class TargetIbadahFragment extends Fragment {
         return editText;
     }
 
-    private TextView textView(int _intID)
-    {
+    private TextView textView(int _intID){
         TextView txtviewAll=new TextView(getActivity());
         txtviewAll.setId(_intID);
         txtviewAll.setText("Step ");
@@ -255,8 +265,7 @@ public class TargetIbadahFragment extends Fragment {
         //textviewList.add(txtviewAll);
         return txtviewAll;
     }
-    private LinearLayout linearlayout(int _intID)
-    {
+    private LinearLayout linearlayout(int _intID){
         LinearLayout LLMain=new LinearLayout(getActivity());
         LLMain.setId(_intID);
 
