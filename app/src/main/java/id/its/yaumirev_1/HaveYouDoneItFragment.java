@@ -34,6 +34,7 @@ public class HaveYouDoneItFragment extends Fragment {
     private String[] column;
     private ProfileTargetAdapter profile;
     private MyDBHandler dbHandler;
+    private ReadFileJSON myJSON;
 
     public HaveYouDoneItFragment() {
         // Required empty public constructor
@@ -77,6 +78,8 @@ public class HaveYouDoneItFragment extends Fragment {
         column = dbHandler.getData();
         column = Arrays.copyOfRange(column,1,column.length);
 
+//        myJSON = new ReadFileJSON(getActivity(),"jsonDataFetchedAmalan");
+
         profile = new ProfileTargetAdapter(this.getContext(),column);
         gridView.setAdapter(profile);
 
@@ -95,7 +98,7 @@ public class HaveYouDoneItFragment extends Fragment {
             public void onClick(View v) {
 
 
-                for (int i=1;i<column.length;i++){
+                for (int i=0;i<column.length;i++){
 //                    System.out.println("++++++"+profile.getItemInput(i));
                     dbHandler.addSomething(dbHandler.addNewRow(),column[i],profile.getItemInput(i));
 

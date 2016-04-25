@@ -17,12 +17,12 @@ public class MyDBHandler extends SQLiteOpenHelper {
     private static final String TABLE_IBADAH = "ibadah";
 
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_TAHAJUD = "tahajud";
-    public static final String COLUMN_RAWATIB = "rawatib";
-    public static final String COLUMN_DHUHA = "dhuha";
-    public static final String COLUMN_PUASA = "puasa";
-    public static final String COLUMN_RIYADHOH = "riyadhoh";
-    public static final String COLUMN_SHOLAT_JAMAAH = "jamaah";
+    public static final String COLUMN_TAHAJUD = "Tahajud";
+    public static final String COLUMN_RAWATIB = "Rawatib";
+    public static final String COLUMN_DHUHA = "Dhuha";
+    public static final String COLUMN_PUASA = "Puasa";
+    public static final String COLUMN_RIYADHOH = "Riyadhoh";
+    public static final String COLUMN_SHOLAT_JAMAAH = "Jamaah";
     private SQLiteDatabase db;
 
 
