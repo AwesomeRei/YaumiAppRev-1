@@ -7,16 +7,16 @@ import java.io.Serializable;
  * Created by Zachary on 4/25/2016.
  */
 public class Amal implements Serializable {
-    @SerializedName("amal_id")
+    @SerializedName("idamal")
     private String idamal;
 
-    @SerializedName("amal_nama")
+    @SerializedName("namaamal")
     private String namaamal;
 
-    @SerializedName("amal_value")
+    @SerializedName("value")
     private String value;
 
-    @SerializedName("amal_satuan")
+    @SerializedName("satuan")
     private String satuan;
 
     public String getIdamal() {

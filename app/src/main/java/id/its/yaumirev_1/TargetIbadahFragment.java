@@ -15,6 +15,17 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.Cache;
+import com.android.volley.Network;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import org.apache.http.HttpEntity;
@@ -22,6 +33,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,7 +62,7 @@ public class TargetIbadahFragment extends Fragment {
     private ListView listView;
     private Button button;
     private EditText input;
-    private String[] column;
+    private static String[] column = null;
     private TargetAdapter profile;
     private MyDBHandler dbHandler;
     private LinearLayout llEnterTarget;
@@ -58,6 +70,10 @@ public class TargetIbadahFragment extends Fragment {
     private List<EditText> editTextList2 = new ArrayList<EditText>();
     private List<TextView> textViewList = new ArrayList<TextView>();
     int _intMyLineCount;
+    private static final String[] DESCRIPTION = new String[]{
+            "Tahajud","Tahajud2","Tahajud3","Tahajud4","Tahajud5","Tahajud6"
+    };
+
 
     private ReadFileJSON myJSON;
     private Ibadah ib ;
@@ -107,23 +123,90 @@ public class TargetIbadahFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_target_ibadah, container, false);
         listView =(ListView) rootView.findViewById(R.id.listView1);
-        FetchDataTask fetchDataTask = new FetchDataTask();
-        fetchDataTask.execute();
+        getDataFromWeb();
+//        startRequest();
+//        FetchDataTask fetchDataTask = new FetchDataTask();
+//        fetchDataTask.execute();
 
 //        System.out.println(getStringFromInputStream(reader));
-        ib = new Ibadah();
+//        ib = new Ibadah();
 //        ib = gson.fromJson(reader, Ibadah.class);
-
-        for (int i = 0;i<ib.getAmals().size();i++){
-                column[i] = ib.getAmals().get(i).getNamaamal();
-            }
-        profile = new TargetAdapter(this.getContext(),column);
-        listView.setAdapter(profile);
+//
+//        for (int i = 0;i<ib.getAmals().size();i++){
+//                column[i] = ib.getAmals().get(i).getNamaamal();
+//            }
+//        profile = new TargetAdapter(this.getContext(),column);
+//        listView.setAdapter(profile);
 
         displayAddTarget();
         checkButtonClick();
         return rootView;
     }
+
+    private void startRequest(){
+        String url = "https://api.myjson.com/bins/4mp9q";
+//        GsonRequest jsObjRequest = new GsonRequest(url,Ibadah.class,
+//                createMyRequestSuccessListener(),
+//                createMyRequestErrorListener());
+
+        GsonRequest jsObjRequest = new GsonRequest(url,Ibadah.class,null,
+                new Response.Listener<Ibadah>() {
+                    @Override
+                    public void onResponse(Ibadah response) {
+                        System.out.println("Response : " + response.toString());
+                        String textResult = "";
+                        for (int i= 0;i<response.getAmals().size();i++){
+                            Amal amalItem = response.getAmals().get(i);
+
+                            column[i] = amalItem.getNamaamal();
+                            System.out.println("REsponse: "+ column[i]);
+                        }
+
+//                    profile = new TargetAdapter(this.getContext(),column);
+                    }
+                },
+                new Response.ErrorListener(){
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if(error != null) Log.e("MainActivity", error.getMessage());
+                    }
+                });
+
+        MySingleton.getInstance(this.getContext()).addToRequestQueue(jsObjRequest);
+
+    }
+
+    private void createMyRequestSuccessListener() {
+
+    }
+    private Response.Listener<Ibadah> createMyRequestErrorListener() {
+        return new Response.Listener<Ibadah>(){
+
+            @Override
+            public void onResponse(Ibadah response) {
+
+            }
+        };
+    }
+
+    private void getDataFromWeb(){
+        String url = "https://api.myjson.com/bins/4mp9q";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                System.out.println("Response : " + response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        MySingleton.getInstance(this.getContext()).addToRequestQueue(jsonObjectRequest);
+    }
+
     public class FetchDataTask extends AsyncTask<Void,Void,Void>{
 
         @Override
