@@ -3,29 +3,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="id.its.yaumirev_1.DetailedProgressFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_gravity="center_horizontal|center_vertical" />
+    <!-- TODO: Update blank fragment layout -->
+    <GridView
+        android:id="@+id/gridTarget"
+        android:padding="8dp"
         android:layout_margin="8dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:numColumns="2"
+        android:gravity="center"
+        android:columnWidth="100dp"
+        android:horizontalSpacing="8dp"
+        android:verticalSpacing="8dp"
+        android:stretchMode="columnWidth"
         >
 
-        <GridView
-            android:id="@+id/gridTarget"
-            android:padding="8dp"
-            android:layout_margin="8dp"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:numColumns="auto_fit"
-            android:gravity="center"
-            android:columnWidth="100dp"
-            android:stretchMode="columnWidth"
-            >
+    </GridView>
 
-        </GridView>
-
-
-    </android.support.v7.widget.CardView>
 
 </FrameLayout>

@@ -1,21 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@color/white"
+    android:elevation="4dp"
+    >
 
     <TextView
+        android:id="@+id/textViewInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_gravity="center_horizontal"
         android:text="Large Text"
-        android:id="@+id/textViewInput"
-        android:layout_gravity="center_horizontal" />
+        android:textAllCaps="true"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/colorAccent1"
+        android:textSize="14sp" />
 
     <EditText
+        android:id="@+id/editTextInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
+        android:layout_gravity="center_horizontal"
         android:ems="10"
-        android:id="@+id/editTextInput"
-        android:layout_gravity="center_horizontal" />
+        android:inputType="number"
+        android:textColor="@color/colorAccent1"
+        android:textColorHighlight="@color/colorAccent1"
+        android:textColorHint="@color/colorAccent1" />
 </LinearLayout>

@@ -4,18 +4,28 @@
     android:layout_height="match_parent"
     tools:context="id.its.yaumirev_1.TargetIbadahFragment">
 
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_gravity="center_horizontal" />
     <!-- TODO: Update blank fragment layout -->
     <ScrollView
+        android:id="@+id/targetScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+
             <ListView
                 android:id="@+id/listView1"
                 android:layout_width="match_parent"
-                android:layout_height="333dp"></ListView>
+                android:layout_height="300dp"></ListView>
 
             <Button
                 android:id="@+id/findSelected"

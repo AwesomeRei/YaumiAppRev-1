@@ -1,5 +1,6 @@
 package id.its.yaumirev_1;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -20,11 +21,14 @@ import android.widget.GridView;
 public class ProfileFragment extends Fragment {
     GridView gridView;
     static final String[] DESCRIPTION = new String[]{
-            "Tahajud","Tahajud2","Tahajud3","Tahajud4","Tahajud5","Tahajud6"
+            "Tahajud","Tahajud2","Tahajud3","Tahajud4","Tahajud5"
     };
 
     static final String[] DESCIPTION_VALUES = new String[]{
-            "10%","20%","30%","40%","50%","60%"
+            "10%","20%","30%","40%","50%"
+    };
+    int[] color = {
+            Color.BLUE,Color.RED,Color.YELLOW,Color.BLACK,Color.GREEN
     };
 
 
@@ -77,7 +81,7 @@ public class ProfileFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
         gridView =(GridView)rootView.findViewById(R.id.gridTarget);
-        gridView.setAdapter(new ProfileDetailTargetAdapter(this.getActivity(),DESCRIPTION,DESCIPTION_VALUES));
+        gridView.setAdapter(new ProfileDetailTargetAdapter(this.getActivity(),DESCRIPTION,DESCIPTION_VALUES,color));
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

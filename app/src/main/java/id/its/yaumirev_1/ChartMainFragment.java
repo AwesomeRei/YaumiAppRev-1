@@ -26,9 +26,9 @@ public class ChartMainFragment extends Fragment {
         mTabHost.addTab(
                 mTabHost.newTabSpec("Chart1").setIndicator("Chart 1", null),
                 ChartProgressFragment.class, null);
-        mTabHost.addTab(
-                mTabHost.newTabSpec("tab3").setIndicator("Tab 3", null),
-                ChartProgressFragment.class, null);
+//        mTabHost.addTab(
+//                mTabHost.newTabSpec("tab3").setIndicator("Tab 3", null),
+//                ChartProgressFragment.class, null);
         mTabHost.addTab(
                 mTabHost.newTabSpec("Detail Progress").setIndicator("Detail", null),
                 DetailedProgressFragment.class, null);

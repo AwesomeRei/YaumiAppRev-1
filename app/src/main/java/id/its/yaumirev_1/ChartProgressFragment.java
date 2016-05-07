@@ -2,12 +2,17 @@ package id.its.yaumirev_1;
 
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +25,7 @@ import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.ValueShape;
 import lecho.lib.hellocharts.model.Viewport;
+import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.LineChartView;
 /**
  * A placeholder fragment containing a simple view.
@@ -35,6 +41,9 @@ public class ChartProgressFragment extends Fragment {
     float[][] randomNumbersTab = new float[maxNumberOfLines][numberOfPoints];
 
     float[][] randomNumbersTab2 = new float[maxNumberOfLines][numberOfPoints];
+    int[] color = {
+            Color.BLUE,Color.RED,Color.YELLOW,Color.BLACK,Color.GREEN
+    };
 
     private boolean hasAxes = true;
     private boolean hasAxesNames = true;
@@ -46,6 +55,17 @@ public class ChartProgressFragment extends Fragment {
     private boolean isCubic = false;
     private boolean hasLabelForSelected = false;
     private boolean pointsHaveDifferentColor;
+    private AsyncTask test;
+    private Tanggal tgl;
+    private Amal amal;
+    private List<PointValue> values;
+    private List<PointValue> values2;
+    private List<PointValue> values3;
+    private ArrayList<List<PointValue>> manyValues;
+    private Line[] line;
+    private List<Line> lines;
+    private int max;
+
 
     public ChartProgressFragment() {
     }
@@ -65,36 +85,126 @@ public class ChartProgressFragment extends Fragment {
 
         chart = (LineChartView) rootView.findViewById(R.id.chart);
         chart.setOnValueTouchListener(new ValueTouchListener());
-
+//        values = new ArrayList<PointValue>();
+        manyValues = new ArrayList<List<PointValue>>();
+        test = new FetchData().execute("Ok");
         // Generate some random values.
-        generateValues();
 
         generateData();
 
         // Disable viewport recalculations, see toggleCubic() method for more info.
         chart.setViewportCalculationEnabled(false);
 
-        resetViewport();
+        resetViewport(max);
 
         return rootView;
     }
 
-    private void generateValues() {
-        for (int i = 0; i < maxNumberOfLines; ++i) {
-            for (int j = 0; j < numberOfPoints; ++j) {
-                randomNumbersTab[i][j] = (float) Math.random() * 100f;
-                randomNumbersTab2[i][j] = (float) Math.random() * 100f;
-            }
+    private class TwoDimensionalArrayList<T> extends ArrayList<ArrayList>{
+
+    }
+    private class FetchData extends AsyncTask<String,Integer,Double> {
+
+        @Override
+        protected Double doInBackground(String... params) {
+            String url = "https://api.myjson.com/bins/22bni";
+            GsonRequest jsObjRequest = new GsonRequest(url,IbadahHarian.class,null,
+                    new Response.Listener<IbadahHarian>() {
+                        @Override
+                        public void onResponse(IbadahHarian response) {
+                            Log.d("Response: ",response.toString());
+                            lines = new ArrayList<Line>();
+                            values = new ArrayList<PointValue>();
+                            values2 = new ArrayList<PointValue>();
+                            values3 = new ArrayList<PointValue>();
+                            max = response.getTgl().size();
+                            for (int i=0;i<response.getTgl().size();i++){
+                                tgl = response.getTgl().get(i);
+                                Log.d("Tanggal: ", tgl.getIdtgl());
+//                                manyValues.add();
+                                line = new Line[tgl.getAmal().size()];
+                                for (int j=0;j<tgl.getAmal().size();j++){
+                                    amal = tgl.getAmal().get(j);
+                                    if (amal.getNamaamal().equals("puasa")){
+                                        values.add(new PointValue(i,Float.parseFloat(amal.getValue())));
+                                        Log.d("Ini: puasa ==",amal.getNamaamal());
+//                                        manyValues.add(0,values);
+                                    }else if (amal.getNamaamal().equals("Sholat Dhuha")){
+                                        values2.add(new PointValue(i,Float.parseFloat(amal.getValue())));
+//                                        manyValues.add(1,values);
+                                        Log.d("Ini: X ==",amal.getNamaamal());
+                                    }else {
+                                        values3.add(new PointValue(i,Float.parseFloat(amal.getValue())));
+                                        Log.d("Ini: tahajjud == ",amal.getNamaamal());
+//                                        manyValues.add(2,values);
+                                    }
+//                                    values.add(new PointValue(i,Float.parseFloat(amal.getValue())));
+//                                    line[j] = new Line().setColor(color[j]).setCubic(true);
+//                                    Log.d("Line ke- ", String.valueOf(j));
+//                                    Log.d("Value Amal: ", amal.getNamaamal());
+//                                    Log.d("Value Amal: ", amal.getValue());
+//                                    lines.add(line[j]);
+                                }
+//                                Amal amal = tgl.getAmal();
+                            }
+
+                            line[0] = new Line(values).setColor(color[0]).setCubic(true);
+                            line[1] = new Line(values2).setColor(color[1]).setCubic(true);
+                            line[2] = new Line(values3).setColor(color[2]).setCubic(true);
+                            lines.add(line[0]);
+                            lines.add(line[1]);
+                            lines.add(line[2]);
+                            generateData();
+
+//                            column = new String[response.getAmals().size()];
+//                            for (int i= 0;i<response.getAmals().size();i++){
+//                                Amal amalItem = response.getAmals().get(i);
+//                                column[i] = amalItem.getNamaamal();
+//                                System.out.println("Response: "+ column[i]);
+//                            }
+//                            mProgress.setVisibility(View.GONE);
+//                            profile = new ProfileTargetAdapter(getContext(),column);
+//                            gridView.setAdapter(profile);
+//                            gridView.setVisibility(View.VISIBLE);
+
+
+                        }
+                    },
+                    new Response.ErrorListener(){
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            if(error != null) Log.e("MainActivity", error.getMessage());
+                        }
+                    });
+
+            MySingleton.getInstance(getActivity()).addToRequestQueue(jsObjRequest);
+//            Log.d("status async", test.getStatus().toString());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Double aDouble) {
+            super.onPostExecute(aDouble);
+//            if(cek!=null)
+//            {
+////                profile = new TargetAdapter(getContext(),cek);
+////                listView.setAdapter(profile);
+////                listView.setVisibility(View.VISIBLE);
+////                Log.d("masuk", "null");
+//            }
+//            Log.d("masuk", "gak null");
+//            Log.d("status async2-->", test.getStatus().toString());
         }
     }
 
-    private void resetViewport() {
+    private void resetViewport(int max ) {
         // Reset viewport height range to (0,100)
         final Viewport v = new Viewport(chart.getMaximumViewport());
         v.bottom = 0;
         v.top = 10;
         v.left = 0;
-        v.right = numberOfPoints - 1;
+        v.right = max + 2;
         chart.setMaximumViewport(v);
         chart.setCurrentViewport(v);
     }
@@ -114,80 +224,21 @@ public class ChartProgressFragment extends Fragment {
         pointsHaveDifferentColor = false;
 
         chart.setValueSelectionEnabled(hasLabelForSelected);
-        resetViewport();
+        resetViewport(max);
     }
 
     private void generateData() {
 
-//        List<Line> lines = new ArrayList<Line>();
-//        for (int i = 0; i < numberOfLines; ++i) {
-//
-//            List<PointValue> values = new ArrayList<PointValue>();
-//            for (int j = 0; j < numberOfPoints; ++j) {
-//                values.add(new PointValue(j, randomNumbersTab[i][j]));
-//            }
-//
-//
-//            Line line = new Line(values);
-//            line.setColor(ChartUtils.COLORS[i]);
-//            line.setShape(shape);
-//            line.setCubic(isCubic);
-//            line.setFilled(isFilled);
-//            line.setHasLabels(hasLabels);
-//            line.setHasLabelsOnlyForSelected(hasLabelForSelected);
-//            line.setHasLines(hasLines);
-//            line.setHasPoints(hasPoints);
-//            if (pointsHaveDifferentColor){
-//                line.setPointColor(ChartUtils.COLORS[(i + 1) % ChartUtils.COLORS.length]);
-//            }
-//            lines.add(line);
-//        }
-//
-//        data = new LineChartData(lines);
-
-
-        List<PointValue> values = new ArrayList<PointValue>();
-        List<PointValue> values2 = new ArrayList<PointValue>();
-        values.add(new PointValue(0, 2));
-        values.add(new PointValue(1, 4));
-        values.add(new PointValue(2, 3));
-        values.add(new PointValue(3, 4));
-        values.add(new PointValue(4, 2));
-        values.add(new PointValue(5, 4));
-        values.add(new PointValue(6, 3));
-        values.add(new PointValue(7, 4));
-        values.add(new PointValue(8, 4));
-        values.add(new PointValue(9, 2));
-        values.add(new PointValue(10, 4));
-        values.add(new PointValue(11, 3));
-        values.add(new PointValue(12, 4));
-        values.add(new PointValue(13, 2));
-        values.add(new PointValue(15, 4));
-        values.add(new PointValue(16, 3));
-        values.add(new PointValue(17, 4));
-        values.add(new PointValue(18, 4));
-        values2.add(new PointValue(1, 3));
-        values2.add(new PointValue(2, 2));
-        values2.add(new PointValue(3, 1));
-        values2.add(new PointValue(4, 0));
-
-
-        //In most cased you can call data model methods in builder-pattern-like manner.
-        Line line = new Line(values).setColor(Color.BLUE).setCubic(true);
-        Line line2 = new Line(values2).setColor(Color.RED).setCubic(true);
-        List<Line> lines = new ArrayList<Line>();
-        lines.add(line);
-        lines.add(line2);
 
         LineChartData data = new LineChartData();
         data.setLines(lines);
 
         if (hasAxes) {
-            Axis axisX = new Axis();
-            Axis axisY = new Axis().setHasLines(true);
+            Axis axisX = new Axis().setHasLines(true).setTextColor(ChartUtils.COLOR_RED);
+            Axis axisY = new Axis().setHasLines(true).setTextColor(ChartUtils.COLOR_RED);
             if (hasAxesNames) {
-                axisX.setName("Axis X");
-                axisY.setName("Axis Y");
+                axisX.setName("Tanggal");
+                axisY.setName("Jumlah Ibadah yang dilakukan");
             }
             data.setAxisXBottom(axisX);
             data.setAxisYLeft(axisY);

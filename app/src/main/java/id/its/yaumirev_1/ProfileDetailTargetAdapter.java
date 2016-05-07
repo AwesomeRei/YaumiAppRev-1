@@ -14,6 +14,7 @@ public class ProfileDetailTargetAdapter extends BaseAdapter {
     private Context context;
     private String[] mobileValues;
     private String[] targetPercent = null;
+    private int[] color;
 //    private EditText[] inputCollection;
 
 //    public ProfileDetailTargetAdapter(Context context, String[] mobileValues){
@@ -22,10 +23,11 @@ public class ProfileDetailTargetAdapter extends BaseAdapter {
 //        inputCollection = new EditText[getCount()];
 //    }
 
-    public ProfileDetailTargetAdapter(Context context, String[] mobileValues, String[] targetPercent) {
+    public ProfileDetailTargetAdapter(Context context, String[] mobileValues, String[] targetPercent, int[] color ) {
         this.context = context;
         this.mobileValues = mobileValues;
         this.targetPercent = targetPercent;
+        this.color= color;
     }
 
     @Override
@@ -59,6 +61,10 @@ public class ProfileDetailTargetAdapter extends BaseAdapter {
 
             TextView textView = (TextView) gridView.findViewById(R.id.targetDescription);
             textView.setText(mobileValues[position]);
+
+            View recView =(View)gridView.findViewById(R.id.myRectangleView);
+            recView.setBackgroundColor(color[position]);
+//            textView.setTextColor(color[position]);
 
 
             TextView textView2 = (TextView) gridView.findViewById(R.id.targetPercentage);

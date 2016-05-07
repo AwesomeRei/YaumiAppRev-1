@@ -13,35 +13,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.android.volley.Cache;
-import com.android.volley.Network;
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -61,26 +47,25 @@ public class TargetIbadahFragment extends Fragment {
     private View rootView;
     private ListView listView;
     private Button button;
-    private EditText input;
-    private static String[] column = null;
+    private static String[] cek;
+    private static String[] satuan;
     private TargetAdapter profile;
-    private MyDBHandler dbHandler;
+
     private LinearLayout llEnterTarget;
     private List<EditText> editTextList = new ArrayList<EditText>();
     private List<EditText> editTextList2 = new ArrayList<EditText>();
     private List<TextView> textViewList = new ArrayList<TextView>();
+    private AsyncTask test;
     int _intMyLineCount;
-    private static final String[] DESCRIPTION = new String[]{
-            "Tahajud","Tahajud2","Tahajud3","Tahajud4","Tahajud5","Tahajud6"
-    };
-
-
+    private ProgressBar mProgress;
+    private ScrollView x;
     private ReadFileJSON myJSON;
-    private Ibadah ib ;
+    private Ibadah ib  ;
     private Amal amal;
     private List<Amal> amalan;
     final Gson gson= new Gson();
 
+    String url = "https://api.myjson.com/bins/4uglk";
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -123,63 +108,16 @@ public class TargetIbadahFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_target_ibadah, container, false);
         listView =(ListView) rootView.findViewById(R.id.listView1);
-        getDataFromWeb();
-//        startRequest();
-//        FetchDataTask fetchDataTask = new FetchDataTask();
-//        fetchDataTask.execute();
-
-//        System.out.println(getStringFromInputStream(reader));
-//        ib = new Ibadah();
-//        ib = gson.fromJson(reader, Ibadah.class);
-//
-//        for (int i = 0;i<ib.getAmals().size();i++){
-//                column[i] = ib.getAmals().get(i).getNamaamal();
-//            }
-//        profile = new TargetAdapter(this.getContext(),column);
-//        listView.setAdapter(profile);
+        x =(ScrollView) rootView.findViewById(R.id.targetScroll);
+        x.setVisibility(View.GONE);
+        mProgress = (ProgressBar)rootView.findViewById(R.id.progressBar);
+        test = new FetchData().execute("Ok");
 
         displayAddTarget();
         checkButtonClick();
         return rootView;
     }
 
-    private void startRequest(){
-        String url = "https://api.myjson.com/bins/4mp9q";
-//        GsonRequest jsObjRequest = new GsonRequest(url,Ibadah.class,
-//                createMyRequestSuccessListener(),
-//                createMyRequestErrorListener());
-
-        GsonRequest jsObjRequest = new GsonRequest(url,Ibadah.class,null,
-                new Response.Listener<Ibadah>() {
-                    @Override
-                    public void onResponse(Ibadah response) {
-                        System.out.println("Response : " + response.toString());
-                        String textResult = "";
-                        for (int i= 0;i<response.getAmals().size();i++){
-                            Amal amalItem = response.getAmals().get(i);
-
-                            column[i] = amalItem.getNamaamal();
-                            System.out.println("REsponse: "+ column[i]);
-                        }
-
-//                    profile = new TargetAdapter(this.getContext(),column);
-                    }
-                },
-                new Response.ErrorListener(){
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if(error != null) Log.e("MainActivity", error.getMessage());
-                    }
-                });
-
-        MySingleton.getInstance(this.getContext()).addToRequestQueue(jsObjRequest);
-
-    }
-
-    private void createMyRequestSuccessListener() {
-
-    }
     private Response.Listener<Ibadah> createMyRequestErrorListener() {
         return new Response.Listener<Ibadah>(){
 
@@ -190,110 +128,63 @@ public class TargetIbadahFragment extends Fragment {
         };
     }
 
-    private void getDataFromWeb(){
-        String url = "https://api.myjson.com/bins/4mp9q";
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                System.out.println("Response : " + response.toString());
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        MySingleton.getInstance(this.getContext()).addToRequestQueue(jsonObjectRequest);
-    }
-
-    public class FetchDataTask extends AsyncTask<Void,Void,Void>{
+    private class FetchData extends AsyncTask<String,Integer,Double>{
 
         @Override
-        protected Void doInBackground(Void... params) {
-            String url = "https://api.myjson.com/bins/4mp9q";
+        protected Double doInBackground(String... params) {
+            String url = "https://api.myjson.com/bins/3x1tk";
+//            String url = "https://10.151.33.33:8080/yaumiWS/rest/yaumi/target";
+            GsonRequest jsObjRequest = new GsonRequest(url,Ibadah.class,null,
+                    new Response.Listener<Ibadah>() {
+                        @Override
+                        public void onResponse(Ibadah response) {
 
-            InputStream source = retrieveStream(url);
-            Reader reader = new InputStreamReader(source);
-            ib = gson.fromJson(reader, Ibadah.class);
+                            cek = new String[response.getAmals().size()];
+                            satuan = new String[response.getAmals().size()];
+                            for (int i= 0;i<response.getAmals().size();i++){
+                                Amal amalItem = response.getAmals().get(i);
+                                cek[i] = amalItem.getNamaamal();
+                                satuan[i] =amalItem.getSatuan();
+                                System.out.println("Response: "+ cek[i]);
+                            }
+                            mProgress.setVisibility(View.GONE);
+                            x.setVisibility(View.VISIBLE);
+                            profile = new TargetAdapter(getContext(),cek);
+                            listView.setAdapter(profile);
+                            listView.setVisibility(View.VISIBLE);
 
+
+                        }
+                    },
+                    new Response.ErrorListener(){
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            if(error != null) Log.e("MainActivity", error.getMessage());
+                        }
+                    });
+
+            MySingleton.getInstance(getActivity()).addToRequestQueue(jsObjRequest);
+            Log.d("status async", test.getStatus().toString());
             return null;
         }
-    }
-    private static String getStringFromInputStream(Reader is) {
 
-        BufferedReader br = null;
-        StringBuilder sb = new StringBuilder();
-
-        String line;
-        try {
-
-            br = new BufferedReader(is);
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
+        @Override
+        protected void onPostExecute(Double aDouble) {
+            super.onPostExecute(aDouble);
+            if(cek!=null)
+            {
+                profile = new TargetAdapter(getContext(),cek);
+                listView.setAdapter(profile);
+                listView.setVisibility(View.VISIBLE);
+                Log.d("masuk", "null");
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            Log.d("masuk", "gak null");
+            Log.d("status async2-->", test.getStatus().toString());
         }
-
-        return sb.toString();
     }
 
-    private InputStream retrieveStream(String url) {
 
-        DefaultHttpClient client = new DefaultHttpClient();
-
-        HttpGet getRequest = new HttpGet(url);
-
-        try {
-
-            HttpResponse getResponse = client.execute(getRequest);
-            final int statusCode = getResponse.getStatusLine().getStatusCode();
-
-            if (statusCode != HttpStatus.SC_OK) {
-                Log.w(getClass().getSimpleName(),
-                        "Error " + statusCode + " for URL " + url);
-                return null;
-            }
-
-            HttpEntity getResponseEntity = getResponse.getEntity();
-            return getResponseEntity.getContent();
-
-        }
-        catch (IOException e) {
-            getRequest.abort();
-            Log.w(getClass().getSimpleName(), "Error for URL " + url, e);
-        }
-
-        return null;
-
-    }
-
-    public String loadJSONFromAsset(){
-        String json = null;
-//        System.out.println(context.getAssets());
-        try {
-            InputStream is = getActivity().getAssets().open("jsonDataFetchedUntukNampilkanTarget.txt");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer,"UTF-8");
-        }catch (IOException ex){
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
     private void displayAddTarget(){
         llEnterTarget = (LinearLayout) rootView.findViewById(R.id.linearView);
         button = (Button)rootView.findViewById(R.id.buttonAdd);
@@ -371,13 +262,52 @@ public class TargetIbadahFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
+            String url = null;
 
+                for (int i=0;i<cek.length;i++){
+                    Log.d("Nama: ",profile.getItemPosition(i));
+                    Log.d("Inputan nya: ",profile.getItemInput(i));
+                    Ibadah inputku = new Ibadah();
+                    List<Amal> amalanku = new ArrayList<Amal>();
+                    final Amal punyaku = new Amal();
+                    punyaku.setIdamal(String.valueOf(i+1));
+                    punyaku.setNamaamal(profile.getItemPosition(i));
+                    punyaku.setValue(profile.getItemInput(i));
+                    punyaku.setSatuan(satuan[i]);
+                    amalanku.add(punyaku);
+                    inputku.setAmal(amalanku);
+                    // Ready to implement dont know right or wrong
+                    StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
 
-                for (int i=0;i<column.length;i++){
-//                    System.out.println("++++++"+profile.getItemInput(i));
-                    dbHandler.addSomething(dbHandler.addNewRow(),column[i],profile.getItemInput(i));
-//                    System.out.println(column[i]);
-//                    System.out.println(profile.getItemInput(i));
+                        @Override
+                        public void onResponse(String response) {
+
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    }){
+                        @Override
+                        protected Map<String, String> getParams() {
+                            Map<String,String> params = new HashMap<String, String>();
+                            params.put("idamal",punyaku.getIdamal());
+                            params.put("namaamal",punyaku.getNamaamal());
+                            params.put("value",punyaku.getValue());
+                            params.put("satuan",punyaku.getSatuan());
+                            return params;
+                        }
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            Map<String,String> params = new HashMap<String, String>();
+                            params.put("Content-Type","application/x-www-form-urlencoded");
+                            return params;
+                        }
+                    };
+                    MySingleton.getInstance(getActivity()).addToRequestQueue(sr);
+
                 }
 
                 for (EditText editText : editTextList) {
@@ -396,8 +326,8 @@ public class TargetIbadahFragment extends Fragment {
 
                 }
 
-                long count = dbHandler.getDataCount();
-                Log.i("Jumlah Data", String.valueOf(count));
+//                long count = dbHandler.getDataCount();
+//                Log.i("Jumlah Data", String.valueOf(count));
 //                Toast.makeText(getActivity(),
 //                        (int) count, Toast.LENGTH_LONG).show();
 

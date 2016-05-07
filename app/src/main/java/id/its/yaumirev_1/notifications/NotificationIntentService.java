@@ -7,11 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
-import android.util.Log;
 
 import id.its.yaumirev_1.LoginActivity;
-import id.its.yaumirev_1.broadcast_receivers.NotificationEventReceiver;
 import id.its.yaumirev_1.R;
+import id.its.yaumirev_1.broadcast_receivers.NotificationEventReceiver;
 /**
  * Created by klogi
  *
