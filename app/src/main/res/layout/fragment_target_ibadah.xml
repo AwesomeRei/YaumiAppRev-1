@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/progressBar"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal|center_vertical" />
     <!-- TODO: Update blank fragment layout -->
     <ScrollView
         android:id="@+id/targetScroll"
@@ -19,19 +19,29 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            >
 
 
             <ListView
                 android:id="@+id/listView1"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"></ListView>
+                android:layout_height="300dp"
+                android:layout_margin="8dp"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="5.0sp"
+                ></ListView>
 
             <Button
                 android:id="@+id/findSelected"
+                android:background="@color/colorAccent1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Find"/>
+                android:text="Submit"
+                android:textColor="@color/white"
+                android:layout_margin="8dp"
+                />
 
             <LinearLayout
                 android:id="@+id/linearView"

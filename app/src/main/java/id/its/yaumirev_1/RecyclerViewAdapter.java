@@ -16,12 +16,15 @@ import android.widget.TextView;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolders> {
     private String[] itemList;
     private Context context;
+    private String[] dataBefore;
     private String[] data;
 
-    public RecyclerViewAdapter(Context context,String[] item){
+    public RecyclerViewAdapter(Context context,String[] item,String[] dataBefore){
         this.itemList = item;
         this.context = context;
+        this.dataBefore = dataBefore;
         this.data = new String[item.length];
+        this.data = dataBefore;
     }
 
     @Override
@@ -34,6 +37,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
         holder.amalanName.setText(itemList[position]);
+        holder.amalanInput.setText(dataBefore[position]);
         holder.myCustomEditTextListener.updatePosition(position);
     }
 

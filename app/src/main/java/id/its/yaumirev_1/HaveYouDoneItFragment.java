@@ -16,8 +16,21 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -27,14 +40,16 @@ import com.android.volley.VolleyError;
  */
 public class HaveYouDoneItFragment extends Fragment {
 
-//    MyCustomAdapter dataAdapter;
+    //    MyCustomAdapter dataAdapter;
     private View rootView;
     private GridView gridView;
     private RecyclerView recyclerView;
     private Button button;
     private EditText input;
+    private String[] idamal;
     private String[] column;
     private String[] satuan;
+    private String[] nilai;
     private ProfileTargetAdapter profile;
     private MyDBHandler dbHandler;
     private ReadFileJSON myJSON;
@@ -43,6 +58,7 @@ public class HaveYouDoneItFragment extends Fragment {
     private ProgressBar mProgress;
     private RecyclerViewAdapter rcAdapter;
     private LinearLayout linearLayout;
+
     public HaveYouDoneItFragment() {
         // Required empty public constructor
     }
@@ -106,17 +122,22 @@ public class HaveYouDoneItFragment extends Fragment {
         @Override
         protected Double doInBackground(String... params) {
 
-            String url = "https://api.myjson.com/bins/3x1tk";
+            String url = "http://10.151.33.33:8080/yaumiWS/rest/yaumi/today";
             GsonRequest jsObjRequest = new GsonRequest(url,Ibadah.class,null,
                     new Response.Listener<Ibadah>() {
                         @Override
                         public void onResponse(Ibadah response) {
-
+                            idamal = new String[response.getAmals().size()];
+                            satuan = new String[response.getAmals().size()];
                             column = new String[response.getAmals().size()];
+                            nilai = new String[response.getAmals().size()];
                             for (int i= 0;i<response.getAmals().size();i++){
                                 Amal amalItem = response.getAmals().get(i);
+                                idamal[i] = amalItem.getIdamal();
                                 column[i] = amalItem.getNamaamal();
-                                System.out.println("Response: "+ column[i]);
+                                nilai[i] = amalItem.getValue();
+                                satuan[i] = amalItem.getSatuan();
+//                                System.out.println("Response: "+ column[i]);
                             }
                             mProgress.setVisibility(View.GONE);
                             linearLayout.setVisibility(View.VISIBLE);
@@ -125,7 +146,7 @@ public class HaveYouDoneItFragment extends Fragment {
 //                            gridView.setAdapter(profile);
 //                            gridView.setVisibility(View.VISIBLE);
                             recyclerView.setLayoutManager(ilayout);
-                            rcAdapter = new RecyclerViewAdapter(getContext(),column);
+                            rcAdapter = new RecyclerViewAdapter(getContext(),column,nilai);
                             recyclerView.setAdapter(rcAdapter);
 
 
@@ -152,22 +173,26 @@ public class HaveYouDoneItFragment extends Fragment {
     private void checkButtonClick() {
         Button myButton = (Button) rootView.findViewById(R.id.findSelected);
         myButton.setOnClickListener(new View.OnClickListener() {
-        String[] datamu;
+            String[] datamu;
             @Override
             public void onClick(View v) {
+
+                String url = "http://10.151.33.33:8080/yaumiWS/rest/yaumi/today/add";
 //                String url = null;
 
-                Log.d("Count ", String.valueOf(rcAdapter.getItemCount()));
+//                Log.d("Count ", String.valueOf(rcAdapter.getItemCount()));
                 datamu = new String[rcAdapter.getItemCount()];
                 datamu = rcAdapter.getAll();
 
 //                Log.d("All: ",datamu[0] );
 //                Log.d("All: ",datamu[1] );
 
+                Ibadah inputku = new Ibadah();
+                final List<Amal> amalanku = new ArrayList<Amal>();
                 for (int i=0;i<rcAdapter.getItemCount();i++){
                     Log.d("Value",rcAdapter.getItem(i));
                 }
-//                for (int i=0;i<column.length;i++){
+                for (int i=0;i<rcAdapter.getItemCount();i++){
 //                    Log.d("Nama ", String.valueOf(i));
 //                    profile.getItematZero();
 //                    Log.d("Jumlah: ", String.valueOf(profile.getCount()));
@@ -175,58 +200,77 @@ public class HaveYouDoneItFragment extends Fragment {
 //                    Log.d("Value Input ",rcAdapter.getItemCount());
 //                    System.out.println(column[i]);
 //                    System.out.println(profile.getItemInput(i));
-//                    Ibadah inputku = new Ibadah();
-//                    List<Amal> amalanku = new ArrayList<Amal>();
-//                    final Amal punyaku = new Amal();
-//                    punyaku.setIdamal(String.valueOf(i+1));
-//                    punyaku.setNamaamal(profile.getItemPosition(i));
-//                    punyaku.setValue(profile.getItemInput(i));
-//                    punyaku.setSatuan(satuan[i]);
-//                    amalanku.add(punyaku);
+                    final Amal punyaku = new Amal();
+                    punyaku.setIdamal(idamal[i]);
+                    punyaku.setNamaamal(column[i]);
+                    punyaku.setValue(rcAdapter.getItem(i));
+                    punyaku.setSatuan(satuan[i]);
+                    amalanku.add(punyaku);
+                    try {
+                        JSONObject jsonBody = new JSONObject();
+                        jsonBody.put("idamal",idamal[i]);
+                        jsonBody.put("namaamal",column[i]);
+                        jsonBody.put("value",rcAdapter.getItem(i));
+                        jsonBody.put("satuan",satuan[i]);
+                        final String requestBody = jsonBody.toString();
+                        StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+
+                            @Override
+                            public void onResponse(String response) {
+
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d("error", error.toString());
+                            }
+                        }){
+                            @Override
+                            public String getBodyContentType() {
+                                return String.format("application/json; charset=utf-8");
+                            }
+                            @Override
+                            public byte[] getBody() throws AuthFailureError {
+                                try {
+                                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                                } catch (UnsupportedEncodingException uee) {
+                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                                            requestBody, "utf-8");
+                                    return null;
+                                }
+                            }
+
+//                            @Override
+//                            protected Map<String, String> getParams() {
+//                                Map<String,String> params = new HashMap<String, String>();
+//                                params.put("Ex",amalanku);
+////                            params.put("idamal",punyaku.getIdamal());
+////                            params.put("namaamal",punyaku.getNamaamal());
+////                            params.put("value",punyaku.getValue());
+////                            params.put("satuan",punyaku.getSatuan());
+//
+//                                return params;
+//                            }
+//
+//                            @Override
+//                            public Map<String, String> getHeaders() throws AuthFailureError {
+//                                Map<String,String> params = new HashMap<String, String>();
+//                                params.put("Content-Type","application/x-www-form-urlencoded");
+//                                return params;
+//                            }
+                        };
+                        MySingleton.getInstance(getActivity()).addToRequestQueue(sr);
+
+
+                    }catch (JSONException e){
+                        e.printStackTrace();
+                    }
 //                    inputku.setAmal(amalanku);
                     // Ready to implement dont know right or wrong
-//                    StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-//
-//                        @Override
-//                        public void onResponse(String response) {
-//
-//                        }
-//                    }, new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//
-//                        }
-//                    }){
-//                        @Override
-//                        protected Map<String, String> getParams() {
-//                            Map<String,String> params = new HashMap<String, String>();
-//                            params.put("idamal",punyaku.getIdamal());
-//                            params.put("namaamal",punyaku.getNamaamal());
-//                            params.put("value",punyaku.getValue());
-//                            params.put("satuan",punyaku.getSatuan());
-//                            return params;
-//                        }
-//
-//                        @Override
-//                        public Map<String, String> getHeaders() throws AuthFailureError {
-//                            Map<String,String> params = new HashMap<String, String>();
-//                            params.put("Content-Type","application/x-www-form-urlencoded");
-//                            return params;
-//                        }
-//                    };
-//                    MySingleton.getInstance(getActivity()).addToRequestQueue(sr);
                 }
 
-//            }
+            }
         });
 
     }
-
-
-
-
-
-
-
-
 }

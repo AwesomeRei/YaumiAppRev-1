@@ -1,13 +1,22 @@
 package id.its.yaumirev_1;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import lecho.lib.hellocharts.model.Line;
 
 
 /**
@@ -19,7 +28,7 @@ import android.widget.GridView;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
-    GridView gridView;
+
     static final String[] DESCRIPTION = new String[]{
             "Tahajud","Tahajud2","Tahajud3","Tahajud4","Tahajud5"
     };
@@ -40,6 +49,14 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private GridView gridView;
+    private String[] column;
+    private ProfileDetailTargetAdapter profile;
+    private MyDBHandler dbHandler;
+    private ReadFileJSON myJSON;
+    private AsyncTask test;
+    private ProgressBar mProgress;
+    private LinearLayout linearLayout;
 
 //    private OnFragmentInteractionListener mListener;
 
@@ -79,19 +96,76 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
-
+        linearLayout = (LinearLayout)rootView.findViewById(R.id.linearLayoutTarget);
+        linearLayout.setVisibility(View.GONE);
         gridView =(GridView)rootView.findViewById(R.id.gridTarget);
-        gridView.setAdapter(new ProfileDetailTargetAdapter(this.getActivity(),DESCRIPTION,DESCIPTION_VALUES,color));
+        mProgress = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        test = new FetchData().execute("Ok");
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(this.getActivity(),((TextView) view.findViewById(R.id.targetPercentage)).getText(),Toast.LENGTH_SHORT).show();
-            }
-        });
+//        gridView.setAdapter(new ProfileDetailTargetAdapter(this.getActivity(),DESCRIPTION,DESCIPTION_VALUES,color));
+//
+//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+////                Toast.makeText(this.getActivity(),((TextView) view.findViewById(R.id.targetPercentage)).getText(),Toast.LENGTH_SHORT).show();
+//            }
+//        });
         return rootView;
     }
+    private class FetchData extends AsyncTask<String,Integer,Double> {
 
+        @Override
+        protected Double doInBackground(String... params) {
+            String url = "https://api.myjson.com/bins/4mp9q";
+            GsonRequest jsObjRequest = new GsonRequest(url,Ibadah.class,null,
+                    new Response.Listener<Ibadah>() {
+                        @Override
+                        public void onResponse(Ibadah response) {
+
+                            column = new String[response.getAmals().size()];
+                            String[] value = new String[response.getAmals().size()];
+                            for (int i= 0;i<response.getAmals().size();i++){
+                                Amal amalItem = response.getAmals().get(i);
+                                column[i] = amalItem.getNamaamal();
+                                value[i] = amalItem.getValue();
+                                System.out.println("Response: "+ column[i]);
+                            }
+                            mProgress.setVisibility(View.GONE);
+                            profile = new ProfileDetailTargetAdapter(getContext(),column,value,color);
+                            gridView.setAdapter(profile);
+                            linearLayout.setVisibility(View.VISIBLE);
+                            gridView.setVisibility(View.VISIBLE);
+
+
+                        }
+                    },
+                    new Response.ErrorListener(){
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            if(error != null) Log.e("MainActivity", error.getMessage());
+                        }
+                    });
+
+            MySingleton.getInstance(getActivity()).addToRequestQueue(jsObjRequest);
+//            Log.d("status async", test.getStatus().toString());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Double aDouble) {
+            super.onPostExecute(aDouble);
+//            if(cek!=null)
+//            {
+////                profile = new TargetAdapter(getContext(),cek);
+////                listView.setAdapter(profile);
+////                listView.setVisibility(View.VISIBLE);
+////                Log.d("masuk", "null");
+//            }
+            Log.d("masuk", "gak null");
+//            Log.d("status async2-->", test.getStatus().toString());
+        }
+    }
     // TODO: Rename method, update argument and hook method into UI event
 //    public void onButtonPressed(Uri uri) {
 //        if (mListener != null) {
