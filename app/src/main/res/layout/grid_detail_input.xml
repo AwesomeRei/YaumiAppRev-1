@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:layout_margin="8dp"
-    android:orientation="vertical"
-    android:padding="8dp"
     android:background="@color/white"
     android:elevation="4dp"
+    android:orientation="vertical"
+    android:padding="16dp"
     >
 
     <TextView
@@ -17,16 +17,29 @@
         android:textAllCaps="true"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/colorAccent1"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/editTextInput"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:background="@null"
         android:ems="10"
+        android:textAlignment="center"
+        android:gravity="center_horizontal"
         android:inputType="number"
         android:textColor="@color/colorAccent1"
         android:textColorHighlight="@color/colorAccent1"
         android:textColorHint="@color/colorAccent1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/textView2"
+        android:layout_gravity="center_horizontal" />
+
+
 </LinearLayout>

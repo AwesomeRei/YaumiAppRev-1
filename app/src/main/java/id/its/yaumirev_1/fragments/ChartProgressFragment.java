@@ -1,4 +1,4 @@
-package id.its.yaumirev_1;
+package id.its.yaumirev_1.fragments;
 
 
 import android.graphics.Color;
@@ -17,6 +17,12 @@ import com.android.volley.VolleyError;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.its.yaumirev_1.Amal;
+import id.its.yaumirev_1.GsonRequest;
+import id.its.yaumirev_1.IbadahHarian;
+import id.its.yaumirev_1.MySingleton;
+import id.its.yaumirev_1.R;
+import id.its.yaumirev_1.Tanggal;
 import lecho.lib.hellocharts.animation.ChartAnimationListener;
 import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
@@ -107,12 +113,12 @@ public class ChartProgressFragment extends Fragment {
 
         @Override
         protected Double doInBackground(String... params) {
-            String url = "https://api.myjson.com/bins/22bni";
+            String url = "http://10.151.33.33:8080/yaumiWS/rest/yaumi/monthly";
             GsonRequest jsObjRequest = new GsonRequest(url,IbadahHarian.class,null,
                     new Response.Listener<IbadahHarian>() {
                         @Override
                         public void onResponse(IbadahHarian response) {
-                            Log.d("Response: ",response.toString());
+//                            Log.d("Response: ",response.toString());
                             lines = new ArrayList<Line>();
                             values = new ArrayList<PointValue>();
                             values2 = new ArrayList<PointValue>();
@@ -123,6 +129,9 @@ public class ChartProgressFragment extends Fragment {
                                 Log.d("Tanggal: ", tgl.getIdtgl());
 //                                manyValues.add();
                                 line = new Line[tgl.getAmal().size()];
+                                for (int x=0;x<tgl.getAmal().size();x++){
+
+                                }
                                 for (int j=0;j<tgl.getAmal().size();j++){
                                     amal = tgl.getAmal().get(j);
                                     if (amal.getNamaamal().equals("puasa")){

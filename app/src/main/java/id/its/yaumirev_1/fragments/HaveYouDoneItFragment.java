@@ -1,4 +1,4 @@
-package id.its.yaumirev_1;
+package id.its.yaumirev_1.fragments;
 
 
 import android.os.AsyncTask;
@@ -23,14 +23,23 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import id.its.yaumirev_1.Adapter.ProfileTargetAdapter;
+import id.its.yaumirev_1.Adapter.RecyclerViewAdapter;
+import id.its.yaumirev_1.Amal;
+import id.its.yaumirev_1.GsonRequest;
+import id.its.yaumirev_1.Ibadah;
+import id.its.yaumirev_1.MyDBHandler;
+import id.its.yaumirev_1.MySingleton;
+import id.its.yaumirev_1.R;
+import id.its.yaumirev_1.ReadFileJSON;
 
 
 /**
@@ -137,7 +146,6 @@ public class HaveYouDoneItFragment extends Fragment {
                                 column[i] = amalItem.getNamaamal();
                                 nilai[i] = amalItem.getValue();
                                 satuan[i] = amalItem.getSatuan();
-//                                System.out.println("Response: "+ column[i]);
                             }
                             mProgress.setVisibility(View.GONE);
                             linearLayout.setVisibility(View.VISIBLE);
@@ -173,101 +181,70 @@ public class HaveYouDoneItFragment extends Fragment {
     private void checkButtonClick() {
         Button myButton = (Button) rootView.findViewById(R.id.findSelected);
         myButton.setOnClickListener(new View.OnClickListener() {
+//
             String[] datamu;
             @Override
             public void onClick(View v) {
 
                 String url = "http://10.151.33.33:8080/yaumiWS/rest/yaumi/today/add";
-//                String url = null;
 
-//                Log.d("Count ", String.valueOf(rcAdapter.getItemCount()));
                 datamu = new String[rcAdapter.getItemCount()];
                 datamu = rcAdapter.getAll();
-
-//                Log.d("All: ",datamu[0] );
-//                Log.d("All: ",datamu[1] );
 
                 Ibadah inputku = new Ibadah();
                 final List<Amal> amalanku = new ArrayList<Amal>();
                 for (int i=0;i<rcAdapter.getItemCount();i++){
                     Log.d("Value",rcAdapter.getItem(i));
                 }
-                for (int i=0;i<rcAdapter.getItemCount();i++){
-//                    Log.d("Nama ", String.valueOf(i));
-//                    profile.getItematZero();
-//                    Log.d("Jumlah: ", String.valueOf(profile.getCount()));
-//                    Log.d("Nama Input ",rcAdapter.getItem(i));
-//                    Log.d("Value Input ",rcAdapter.getItemCount());
-//                    System.out.println(column[i]);
-//                    System.out.println(profile.getItemInput(i));
-                    final Amal punyaku = new Amal();
-                    punyaku.setIdamal(idamal[i]);
-                    punyaku.setNamaamal(column[i]);
-                    punyaku.setValue(rcAdapter.getItem(i));
-                    punyaku.setSatuan(satuan[i]);
-                    amalanku.add(punyaku);
+                JSONArray arr = new JSONArray();
+                for (int i=0;i<rcAdapter.getItemCount();i++) {
                     try {
-                        JSONObject jsonBody = new JSONObject();
-                        jsonBody.put("idamal",idamal[i]);
-                        jsonBody.put("namaamal",column[i]);
-                        jsonBody.put("value",rcAdapter.getItem(i));
-                        jsonBody.put("satuan",satuan[i]);
-                        final String requestBody = jsonBody.toString();
-                        StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-
-                            @Override
-                            public void onResponse(String response) {
-
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.d("error", error.toString());
-                            }
-                        }){
-                            @Override
-                            public String getBodyContentType() {
-                                return String.format("application/json; charset=utf-8");
-                            }
-                            @Override
-                            public byte[] getBody() throws AuthFailureError {
-                                try {
-                                    return requestBody == null ? null : requestBody.getBytes("utf-8");
-                                } catch (UnsupportedEncodingException uee) {
-                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
-                                            requestBody, "utf-8");
-                                    return null;
-                                }
-                            }
-
-//                            @Override
-//                            protected Map<String, String> getParams() {
-//                                Map<String,String> params = new HashMap<String, String>();
-//                                params.put("Ex",amalanku);
-////                            params.put("idamal",punyaku.getIdamal());
-////                            params.put("namaamal",punyaku.getNamaamal());
-////                            params.put("value",punyaku.getValue());
-////                            params.put("satuan",punyaku.getSatuan());
-//
-//                                return params;
-//                            }
-//
-//                            @Override
-//                            public Map<String, String> getHeaders() throws AuthFailureError {
-//                                Map<String,String> params = new HashMap<String, String>();
-//                                params.put("Content-Type","application/x-www-form-urlencoded");
-//                                return params;
-//                            }
-                        };
-                        MySingleton.getInstance(getActivity()).addToRequestQueue(sr);
-
-
-                    }catch (JSONException e){
+                        JSONObject obj = new JSONObject();
+                        obj.put("idamal", idamal[i]);
+                        obj.put("namaamal", column[i]);
+                        obj.put("value", rcAdapter.getItem(i));
+                        obj.put("satuan", satuan[i]);
+                        arr.put(obj);
+                    }
+                    catch (JSONException e) {
+                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-//                    inputku.setAmal(amalanku);
-                    // Ready to implement dont know right or wrong
                 }
+
+                final String requestBody = arr.toString();
+                StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("error", error.toString());
+                    }
+                }){
+                    @Override
+                    public String getBodyContentType() {
+                        return String.format("application/json; charset=utf-8");
+                    }
+                    @Override
+                    public byte[] getBody() throws AuthFailureError {
+                        try {
+                            return requestBody == null ? null : requestBody.getBytes("utf-8");
+                        } catch (UnsupportedEncodingException uee) {
+                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                                    requestBody, "utf-8");
+                            return null;
+                        }
+                    }
+                };
+                MySingleton.getInstance(getActivity()).addToRequestQueue(sr);
+
+//                    inputku.setAmal(amalanku);
+                // Ready to implement dont know right or wrong
+
 
             }
         });

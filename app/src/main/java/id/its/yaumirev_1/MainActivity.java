@@ -13,21 +13,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.android.volley.Cache;
-import com.android.volley.Network;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONObject;
-
 import id.its.yaumirev_1.broadcast_receivers.NotificationEventReceiver;
+import id.its.yaumirev_1.fragments.ChartMainFragment;
+import id.its.yaumirev_1.fragments.HaveYouDoneItFragment;
+import id.its.yaumirev_1.fragments.ProfileFragment;
+import id.its.yaumirev_1.fragments.TargetIbadahFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -148,27 +138,5 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void getDataFromWeb(){
-        RequestQueue queue = Volley.newRequestQueue(this);
-
-        Cache cache = new DiskBasedCache(getCacheDir(),1024*1024);
-
-        Network network = new BasicNetwork(new HurlStack());
-        String url = "https://api.myjson.com/bins/4mp9q";
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                System.out.println("Response : " + response.toString());
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-        queue.add(jsonObjectRequest);
-    }
 
 }

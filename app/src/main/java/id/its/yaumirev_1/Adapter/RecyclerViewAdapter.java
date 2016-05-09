@@ -1,14 +1,17 @@
-package id.its.yaumirev_1;
+package id.its.yaumirev_1.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import id.its.yaumirev_1.R;
 
 /**
  * Created by Zachary on 5/5/2016.
@@ -92,6 +95,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+            Log.d("position: ", String.valueOf(position));
+            Log.d("data ke position",data[position]);
+
             data[position] = s.toString();
         }
 

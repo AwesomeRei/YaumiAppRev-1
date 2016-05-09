@@ -23,12 +23,22 @@
 
             <EditText
                 android:id="@+id/editTextInput"
-                android:layout_width="100dp"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_toLeftOf="@+id/textView4"
+                android:layout_marginRight="4dp"
                 android:textSize="16sp"
                 android:inputType="number"
-                android:layout_marginRight="8dp" />
+                android:layout_alignBaseline="@+id/textViewInput"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Small Text"
+                android:layout_alignParentRight="true"
+                android:id="@+id/textView4" />
+
         </RelativeLayout>
 
 </LinearLayout>

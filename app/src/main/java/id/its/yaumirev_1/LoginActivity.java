@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +29,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -191,7 +204,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+//        return email.contains("@");
+        return true;
     }
 
     private boolean isPasswordValid(String password) {
@@ -308,6 +322,57 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // TODO: attempt authentication against a network service.
 
             try {
+                String url = "http://10.151.33.33:8080/yaumiWS/rest/yaumi/login";
+
+//                datamu = new String[rcAdapter.getItemCount()];
+//                datamu = rcAdapter.getAll();
+
+//                Ibadah inputku = new Ibadah();
+//                final List<Amal> amalanku = new ArrayList<Amal>();
+//                for (int i=0;i<rcAdapter.getItemCount();i++){
+//                    Log.d("Value",rcAdapter.getItem(i));
+////                }
+//                JSONArray arr = new JSONArray();
+//                try{
+//                    JSONObject obj = new JSONObject();
+//                    obj.put("username", mEmail);
+//                    obj.put("password", mPassword);
+//                    arr.put(obj);
+//
+//                }catch (JSONException e){
+//                    e.printStackTrace();
+//                }
+//
+//                final String requestBody = arr.toString();
+//                StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+//
+//                    @Override
+//                    public void onResponse(String response) {
+//                        Log.d("Return Message : ",response.toString());
+//                    }
+//                }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.d("error", error.toString());
+//                    }
+//                }){
+//                    @Override
+//                    public String getBodyContentType() {
+//                        return String.format("application/json; charset=utf-8");
+//                    }
+//                    @Override
+//                    public byte[] getBody() throws AuthFailureError {
+//                        try {
+//                            return requestBody == null ? null : requestBody.getBytes("utf-8");
+//                        } catch (UnsupportedEncodingException uee) {
+//                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+//                                    requestBody, "utf-8");
+//                            return null;
+//                        }
+//                    }
+//                };
+//                MySingleton.getInstance(getApplication()).addToRequestQueue(sr);
+
                 // Simulate network access.
                 Thread.sleep(2000);
             } catch (InterruptedException e) {

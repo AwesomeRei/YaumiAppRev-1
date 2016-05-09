@@ -1,4 +1,4 @@
-package id.its.yaumirev_1;
+package id.its.yaumirev_1.fragments;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -21,13 +21,25 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import id.its.yaumirev_1.Adapter.TargetAdapter;
+import id.its.yaumirev_1.Amal;
+import id.its.yaumirev_1.GsonRequest;
+import id.its.yaumirev_1.Ibadah;
+import id.its.yaumirev_1.MySingleton;
+import id.its.yaumirev_1.R;
+import id.its.yaumirev_1.ReadFileJSON;
 
 
 /**
@@ -47,8 +59,12 @@ public class TargetIbadahFragment extends Fragment {
     private View rootView;
     private ListView listView;
     private Button button;
+
+    private String[] idamal;
+    private String[] column;
+    private String[] satuan;
+    private String[] nilai;
     private static String[] cek;
-    private static String[] satuan;
     private TargetAdapter profile;
 
     private LinearLayout llEnterTarget;
@@ -65,7 +81,7 @@ public class TargetIbadahFragment extends Fragment {
     private List<Amal> amalan;
     final Gson gson= new Gson();
 
-    String url = "https://api.myjson.com/bins/4uglk";
+    String url = null;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -132,24 +148,31 @@ public class TargetIbadahFragment extends Fragment {
 
         @Override
         protected Double doInBackground(String... params) {
-            String url = "https://api.myjson.com/bins/3x1tk";
-//            String url = "https://10.151.33.33:8080/yaumiWS/rest/yaumi/target";
+//            String url = "https://api.myjson.com/bins/3x1tk";
+            String url = "http://10.151.33.33:8080/yaumiWS/rest/yaumi/target";
             GsonRequest jsObjRequest = new GsonRequest(url,Ibadah.class,null,
                     new Response.Listener<Ibadah>() {
                         @Override
                         public void onResponse(Ibadah response) {
-
+                            idamal = new String[response.getAmals().size()];
+                            nilai = new String[response.getAmals().size()];
                             cek = new String[response.getAmals().size()];
                             satuan = new String[response.getAmals().size()];
                             for (int i= 0;i<response.getAmals().size();i++){
                                 Amal amalItem = response.getAmals().get(i);
+                                idamal[i]=amalItem.getIdamal();
                                 cek[i] = amalItem.getNamaamal();
+                                nilai[i]= amalItem.getValue();
                                 satuan[i] =amalItem.getSatuan();
-                                System.out.println("Response: "+ cek[i]);
+//                                System.out.println("Response: "+ cek[i]);
+                                Log.d("idamal ",idamal[i]);
+                                Log.d("nama ",cek[i]);
+                                Log.d("nilai ",nilai[i]);
+                                Log.d("satuan ",satuan[i]);
                             }
                             mProgress.setVisibility(View.GONE);
                             x.setVisibility(View.VISIBLE);
-                            profile = new TargetAdapter(getContext(),cek);
+                            profile = new TargetAdapter(getContext(),cek,satuan);
                             listView.setAdapter(profile);
                             listView.setVisibility(View.VISIBLE);
 
@@ -173,14 +196,14 @@ public class TargetIbadahFragment extends Fragment {
         protected void onPostExecute(Double aDouble) {
             super.onPostExecute(aDouble);
             if(cek!=null)
-            {
-                profile = new TargetAdapter(getContext(),cek);
-                listView.setAdapter(profile);
-                listView.setVisibility(View.VISIBLE);
+//            {
+//                profile = new TargetAdapter(getContext(),cek);
+//                listView.setAdapter(profile);
+//                listView.setVisibility(View.VISIBLE);
                 Log.d("masuk", "null");
-            }
-            Log.d("masuk", "gak null");
-            Log.d("status async2-->", test.getStatus().toString());
+//            }
+//            Log.d("masuk", "gak null");
+//            Log.d("status async2-->", test.getStatus().toString());
         }
     }
 
@@ -262,53 +285,115 @@ public class TargetIbadahFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-            String url = null;
+                String url = null;
+                String[] datamu;
 
-                for (int i=0;i<cek.length;i++){
-                    Log.d("Nama: ",profile.getItemPosition(i));
-                    Log.d("Inputan nya: ",profile.getItemInput(i));
-                    Ibadah inputku = new Ibadah();
-                    List<Amal> amalanku = new ArrayList<Amal>();
-                    final Amal punyaku = new Amal();
-                    punyaku.setIdamal(String.valueOf(i+1));
-                    punyaku.setNamaamal(profile.getItemPosition(i));
-                    punyaku.setValue(profile.getItemInput(i));
-                    punyaku.setSatuan(satuan[i]);
-                    amalanku.add(punyaku);
-                    inputku.setAmal(amalanku);
-                    // Ready to implement dont know right or wrong
-                    StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                url = "http://10.151.33.33:8080/yaumiWS/rest/yaumi/today/add";
 
-                        @Override
-                        public void onResponse(String response) {
+//                datamu = new String[profile.getCount()];
+//                datamu = rcAdapter.getAll();
 
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-
-                        }
-                    }){
-                        @Override
-                        protected Map<String, String> getParams() {
-                            Map<String,String> params = new HashMap<String, String>();
-                            params.put("idamal",punyaku.getIdamal());
-                            params.put("namaamal",punyaku.getNamaamal());
-                            params.put("value",punyaku.getValue());
-                            params.put("satuan",punyaku.getSatuan());
-                            return params;
-                        }
-
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String,String> params = new HashMap<String, String>();
-                            params.put("Content-Type","application/x-www-form-urlencoded");
-                            return params;
-                        }
-                    };
-                    MySingleton.getInstance(getActivity()).addToRequestQueue(sr);
-
+                Ibadah inputku = new Ibadah();
+                final List<Amal> amalanku = new ArrayList<Amal>();
+                for (int i=0;i<profile.getCount();i++){
+                    Log.d("Value",profile.getItemInput(i));
                 }
+                JSONArray arr = new JSONArray();
+                for (int i=0;i<profile.getCount();i++) {
+                    try {
+                        JSONObject obj = new JSONObject();
+                        obj.put("idamal", idamal[i]);
+                        obj.put("namaamal", column[i]);
+                        obj.put("value", profile.getItemInput(i));
+                        obj.put("satuan", satuan[i]);
+                        arr.put(obj);
+                    }
+                    catch (JSONException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+
+                final String requestBody = arr.toString();
+                StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("error", error.toString());
+                    }
+                }){
+                    @Override
+                    public String getBodyContentType() {
+                        return String.format("application/json; charset=utf-8");
+                    }
+                    @Override
+                    public byte[] getBody() throws AuthFailureError {
+                        try {
+                            return requestBody == null ? null : requestBody.getBytes("utf-8");
+                        } catch (UnsupportedEncodingException uee) {
+                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                                    requestBody, "utf-8");
+                            return null;
+                        }
+                    }
+                };
+                MySingleton.getInstance(getActivity()).addToRequestQueue(sr);
+
+//                    inputku.setAmal(amalanku);
+                // Ready to implement dont know right or wrong
+
+
+
+//                for (int i=0;i<cek.length;i++){
+//                    Log.d("Nama: ",profile.getItemPosition(i));
+//                    Log.d("Inputan nya: ",profile.getItemInput(i));
+//                    Ibadah inputku = new Ibadah();
+//                    List<Amal> amalanku = new ArrayList<Amal>();
+//                    final Amal punyaku = new Amal();
+//                    punyaku.setIdamal(String.valueOf(i+1));
+//                    punyaku.setNamaamal(profile.getItemPosition(i));
+//                    punyaku.setValue(profile.getItemInput(i));
+//                    punyaku.setSatuan(satuan[i]);
+//                    amalanku.add(punyaku);
+//                    inputku.setAmal(amalanku);
+//                    // Ready to implement dont know right or wrong
+//                    StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+//
+//                        @Override
+//                        public void onResponse(String response) {
+//
+//                        }
+//                    }, new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//
+//                        }
+//                    }){
+//                        @Override
+//                        protected Map<String, String> getParams() {
+//                            Map<String,String> params = new HashMap<String, String>();
+//                            params.put("idamal",punyaku.getIdamal());
+//                            params.put("namaamal",punyaku.getNamaamal());
+//                            params.put("value",punyaku.getValue());
+//                            params.put("satuan",punyaku.getSatuan());
+//                            return params;
+//                        }
+//
+//                        @Override
+//                        public Map<String, String> getHeaders() throws AuthFailureError {
+//                            Map<String,String> params = new HashMap<String, String>();
+//                            params.put("Content-Type","application/x-www-form-urlencoded");
+//                            return params;
+//                        }
+//                    };
+//                    MySingleton.getInstance(getActivity()).addToRequestQueue(sr);
+//
+//                }
 
                 for (EditText editText : editTextList) {
                     Log.i("Edit Text",editText.getText().toString());

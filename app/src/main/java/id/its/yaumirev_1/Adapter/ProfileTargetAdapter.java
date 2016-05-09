@@ -1,4 +1,4 @@
-package id.its.yaumirev_1;
+package id.its.yaumirev_1.Adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import id.its.yaumirev_1.R;
 
 /**
  * Created by Zachary on 4/10/2016.

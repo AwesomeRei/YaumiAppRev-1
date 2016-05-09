@@ -1,4 +1,4 @@
-package id.its.yaumirev_1;
+package id.its.yaumirev_1.fragments;
 
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -13,6 +13,15 @@ import android.widget.ProgressBar;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+
+import id.its.yaumirev_1.Adapter.ProfileDetailTargetAdapter;
+import id.its.yaumirev_1.Amal;
+import id.its.yaumirev_1.GsonRequest;
+import id.its.yaumirev_1.Ibadah;
+import id.its.yaumirev_1.MyDBHandler;
+import id.its.yaumirev_1.MySingleton;
+import id.its.yaumirev_1.R;
+import id.its.yaumirev_1.ReadFileJSON;
 
 
 /**
@@ -101,7 +110,7 @@ public class DetailedProgressFragment extends Fragment {
 
         @Override
         protected Double doInBackground(String... params) {
-            String url = "https://api.myjson.com/bins/4mp9q";
+            String url = "http://10.151.33.33:8080/yaumiWS/rest/yaumi/progress";
             GsonRequest jsObjRequest = new GsonRequest(url,Ibadah.class,null,
                     new Response.Listener<Ibadah>() {
                         @Override
@@ -113,7 +122,7 @@ public class DetailedProgressFragment extends Fragment {
                                 Amal amalItem = response.getAmals().get(i);
                                 column[i] = amalItem.getNamaamal();
                                 value[i] = amalItem.getValue();
-                                System.out.println("Response: "+ column[i]);
+//                                System.out.println("Response: "+ column[i]);
                             }
                             mProgress.setVisibility(View.GONE);
                             profile = new ProfileDetailTargetAdapter(getContext(),column,value,color);

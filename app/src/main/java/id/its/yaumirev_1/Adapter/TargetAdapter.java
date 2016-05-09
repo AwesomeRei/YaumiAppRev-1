@@ -1,4 +1,4 @@
-package id.its.yaumirev_1;
+package id.its.yaumirev_1.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,26 +8,23 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import id.its.yaumirev_1.R;
+
 /**
  * Created by Zachary on 4/10/2016.
  */
 public class TargetAdapter extends BaseAdapter {
     private Context context;
     private String[] mobileValues;
-    private String[] targetPercent = null;
+
+    private String[] satuan = null;
     private EditText[] inputCollection;
 
-//    public TargetAdapter(Context context, String[] mobileValues){
-//        this.context = context;
-//        this.mobileValues = mobileValues;
-//        inputCollection = new EditText[getCount()];
-//    }
-
-    public TargetAdapter(Context context, String[] mobileValues) {
+    public TargetAdapter(Context context, String[] mobileValues,String[] targetPercent) {
         this.context = context;
         this.mobileValues = mobileValues;
         inputCollection = new EditText[getCount()];
-//        this.targetPercent = targetPercent;
+        this.satuan = targetPercent;
     }
 
     @Override
@@ -59,6 +56,8 @@ public class TargetAdapter extends BaseAdapter {
 
             TextView textView = (TextView) gridView.findViewById(R.id.textViewInput);
             textView.setText(mobileValues[position]);
+            TextView textSatuan =(TextView) gridView.findViewById(R.id.textView4);
+            textSatuan.setText(satuan[position]);
 //            targetPercent[po] = editText.getText();
 
 //
