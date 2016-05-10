@@ -130,14 +130,16 @@ public class ProfileFragment extends Fragment {
 
                             column = new String[response.getAmals().size()];
                             String[] value = new String[response.getAmals().size()];
+                            String[] satuan = new String[response.getAmals().size()];
                             for (int i= 0;i<response.getAmals().size();i++){
                                 Amal amalItem = response.getAmals().get(i);
                                 column[i] = amalItem.getNamaamal();
                                 value[i] = amalItem.getValue();
+                                satuan[i] = amalItem.getSatuan();
 //                                System.out.println("Response: "+ column[i]);
                             }
                             mProgress.setVisibility(View.GONE);
-                            profile = new ProfileDetailTargetAdapter(getContext(),column,value,color);
+                            profile = new ProfileDetailTargetAdapter(getContext(),column,value,color,satuan);
                             gridView.setAdapter(profile);
                             linearLayout.setVisibility(View.VISIBLE);
                             gridView.setVisibility(View.VISIBLE);

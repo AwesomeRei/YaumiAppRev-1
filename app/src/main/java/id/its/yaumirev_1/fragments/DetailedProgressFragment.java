@@ -42,6 +42,7 @@ public class DetailedProgressFragment extends Fragment {
     private GridView gridView;
 
     private String[] column;
+    private String[] satuan;
     private ProfileDetailTargetAdapter profile;
     private MyDBHandler dbHandler;
     private ReadFileJSON myJSON;
@@ -118,14 +119,17 @@ public class DetailedProgressFragment extends Fragment {
 
                             column = new String[response.getAmals().size()];
                             String[] value = new String[response.getAmals().size()];
+                            satuan = new String[response.getAmals().size()];
                             for (int i= 0;i<response.getAmals().size();i++){
                                 Amal amalItem = response.getAmals().get(i);
                                 column[i] = amalItem.getNamaamal();
                                 value[i] = amalItem.getValue();
+                                satuan[i] = amalItem.getSatuan();
+
 //                                System.out.println("Response: "+ column[i]);
                             }
                             mProgress.setVisibility(View.GONE);
-                            profile = new ProfileDetailTargetAdapter(getContext(),column,value,color);
+                            profile = new ProfileDetailTargetAdapter(getContext(),column,value,color,satuan);
                             gridView.setAdapter(profile);
                             gridView.setVisibility(View.VISIBLE);
 

@@ -21,13 +21,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context context;
     private String[] dataBefore;
     private String[] data;
+    private String[] satuan;
 
-    public RecyclerViewAdapter(Context context,String[] item,String[] dataBefore){
+    public RecyclerViewAdapter(Context context,String[] item,String[] dataBefore,String[] satuan){
         this.itemList = item;
         this.context = context;
         this.dataBefore = dataBefore;
         this.data = new String[item.length];
         this.data = dataBefore;
+        this.satuan = satuan;
     }
 
     @Override
@@ -41,6 +43,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
         holder.amalanName.setText(itemList[position]);
         holder.amalanInput.setText(dataBefore[position]);
+        holder.amalanSatuan.setText(satuan[position]);
         holder.myCustomEditTextListener.updatePosition(position);
     }
 
@@ -69,12 +72,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         public TextView amalanName;
         public EditText amalanInput;
+        public TextView amalanSatuan;
         public MyCustomEditTextListener myCustomEditTextListener;
 
         public RecyclerViewHolders(View itemView,MyCustomEditTextListener myCustomEditTextListener) {
             super(itemView);
             amalanName = (TextView)itemView.findViewById(R.id.textViewInput);
             amalanInput = (EditText)itemView.findViewById(R.id.editTextInput);
+            amalanSatuan = (TextView)itemView.findViewById(R.id.textView2);
             this.myCustomEditTextListener = myCustomEditTextListener;
             this.amalanInput.addTextChangedListener(myCustomEditTextListener);
         }
@@ -95,8 +100,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            Log.d("position: ", String.valueOf(position));
-            Log.d("data ke position",data[position]);
+//            Log.d("position: ", String.valueOf(position));
+//            Log.d("data ke position",data[position]);
 
             data[position] = s.toString();
         }
