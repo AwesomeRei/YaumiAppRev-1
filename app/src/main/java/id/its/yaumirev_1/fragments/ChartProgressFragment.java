@@ -48,7 +48,7 @@ public class ChartProgressFragment extends Fragment {
 
     float[][] randomNumbersTab2 = new float[maxNumberOfLines][numberOfPoints];
     int[] color = {
-            Color.BLUE,Color.RED,Color.YELLOW,Color.BLACK,Color.GREEN
+            Color.BLUE,Color.RED,Color.YELLOW,Color.BLACK,Color.GREEN,Color.WHITE
     };
 
     private boolean hasAxes = true;
@@ -118,64 +118,93 @@ public class ChartProgressFragment extends Fragment {
                     new Response.Listener<IbadahHarian>() {
                         @Override
                         public void onResponse(IbadahHarian response) {
-//                            Log.d("Response: ",response.toString());
+
                             lines = new ArrayList<Line>();
-                            values = new ArrayList<PointValue>();
-                            values2 = new ArrayList<PointValue>();
-                            values3 = new ArrayList<PointValue>();
-                            max = response.getTgl().size();
+//                            String[] nama = new String[response.getTgl().get(0).getAmal().size()];
+                            String[] nama=null;
+                            int max = 0;
+
                             for (int i=0;i<response.getTgl().size();i++){
                                 tgl = response.getTgl().get(i);
-                                Log.d("Tanggal: ", tgl.getIdtgl());
-//                                manyValues.add();
-                                line = new Line[tgl.getAmal().size()];
-                                for (int x=0;x<tgl.getAmal().size();x++){
-
-                                }
+                                nama = new String[tgl.getAmal().size()];
+                                max = tgl.getAmal().size();
                                 for (int j=0;j<tgl.getAmal().size();j++){
                                     amal = tgl.getAmal().get(j);
-                                    if (amal.getNamaamal().equals("puasa")){
-                                        values.add(new PointValue(i,Float.parseFloat(amal.getValue())));
-                                        Log.d("Ini: puasa ==",amal.getNamaamal());
-//                                        manyValues.add(0,values);
-                                    }else if (amal.getNamaamal().equals("Sholat Dhuha")){
-                                        values2.add(new PointValue(i,Float.parseFloat(amal.getValue())));
-//                                        manyValues.add(1,values);
-                                        Log.d("Ini: X ==",amal.getNamaamal());
-                                    }else {
-                                        values3.add(new PointValue(i,Float.parseFloat(amal.getValue())));
-                                        Log.d("Ini: tahajjud == ",amal.getNamaamal());
-//                                        manyValues.add(2,values);
-                                    }
-//                                    values.add(new PointValue(i,Float.parseFloat(amal.getValue())));
-//                                    line[j] = new Line().setColor(color[j]).setCubic(true);
-//                                    Log.d("Line ke- ", String.valueOf(j));
-//                                    Log.d("Value Amal: ", amal.getNamaamal());
-//                                    Log.d("Value Amal: ", amal.getValue());
-//                                    lines.add(line[j]);
+                                    nama[j] =  amal.getNamaamal();
                                 }
-//                                Amal amal = tgl.getAmal();
                             }
+                            Log.d("Max: ", String.valueOf(max));
 
-                            line[0] = new Line(values).setColor(color[0]).setCubic(true);
-                            line[1] = new Line(values2).setColor(color[1]).setCubic(true);
-                            line[2] = new Line(values3).setColor(color[2]).setCubic(true);
-                            lines.add(line[0]);
-                            lines.add(line[1]);
-                            lines.add(line[2]);
+                            line = new Line[max];
+                            for (int x=0;x<max;x++){
+                                Log.d("Nama: ",nama[x]);
+                                values = new ArrayList<PointValue>();
+                                for (int i=0;i<response.getTgl().size();i++){
+                                    tgl = response.getTgl().get(i);
+
+                                    for (int j=0;j<tgl.getAmal().size();j++){
+                                        amal = tgl.getAmal().get(j);
+                                        if (nama[x].equals(amal.getNamaamal())){
+                                            Log.d("nama: ",amal.getNamaamal());
+                                            Log.d("ValuePoint: ",tgl.getIdtgl()+" "+amal.getValue());
+                                            values.add(new PointValue(Float.parseFloat(tgl.getIdtgl()),Float.parseFloat(amal.getValue())));
+                                        }
+                                    }
+                                }
+                                Log.d("Something","+++++++++++++++++++++++++++");
+                                line[x] =new Line(values).setColor(color[x]).setCubic(true);
+                                Log.d("Line ", String.valueOf(line[x]));
+                                lines.add(line[x]);
+                            }
+                            Log.d("Lines ", String.valueOf(lines));
                             generateData();
 
-//                            column = new String[response.getAmals().size()];
-//                            for (int i= 0;i<response.getAmals().size();i++){
-//                                Amal amalItem = response.getAmals().get(i);
-//                                column[i] = amalItem.getNamaamal();
-//                                System.out.println("Response: "+ column[i]);
+//                            Log.d("Response: ",response.toString());
+//                            lines = new ArrayList<Line>();
+//                            values = new ArrayList<PointValue>();
+//                            values2 = new ArrayList<PointValue>();
+//                            values3 = new ArrayList<PointValue>();
+//                            max = response.getTgl().size();
+//                            for (int i=0;i<response.getTgl().size();i++){
+//                                tgl = response.getTgl().get(i);
+//                                Log.d("Tanggal: ", tgl.getIdtgl());
+////                                manyValues.add();
+//                                line = new Line[tgl.getAmal().size()];
+//                                for (int x=0;x<tgl.getAmal().size();x++){
+//
+//                                }
+//                                for (int j=0;j<tgl.getAmal().size();j++){
+//                                    amal = tgl.getAmal().get(j);
+//                                    if (amal.getNamaamal().equals("puasa")){
+//                                        values.add(new PointValue(i,Float.parseFloat(amal.getValue())));
+//                                        Log.d("Ini: puasa ==",amal.getNamaamal());
+////                                        manyValues.add(0,values);
+//                                    }else if (amal.getNamaamal().equals("Sholat Dhuha")){
+//                                        values2.add(new PointValue(i,Float.parseFloat(amal.getValue())));
+////                                        manyValues.add(1,values);
+//                                        Log.d("Ini: X ==",amal.getNamaamal());
+//                                    }else {
+//                                        values3.add(new PointValue(i,Float.parseFloat(amal.getValue())));
+//                                        Log.d("Ini: tahajjud == ",amal.getNamaamal());
+////                                        manyValues.add(2,values);
+//                                    }
+////                                    values.add(new PointValue(i,Float.parseFloat(amal.getValue())));
+////                                    line[j] = new Line().setColor(color[j]).setCubic(true);
+////                                    Log.d("Line ke- ", String.valueOf(j));
+////                                    Log.d("Value Amal: ", amal.getNamaamal());
+////                                    Log.d("Value Amal: ", amal.getValue());
+////                                    lines.add(line[j]);
+//                                }
+////                                Amal amal = tgl.getAmal();
 //                            }
-//                            mProgress.setVisibility(View.GONE);
-//                            profile = new ProfileTargetAdapter(getContext(),column);
-//                            gridView.setAdapter(profile);
-//                            gridView.setVisibility(View.VISIBLE);
-
+//
+//                            line[0] = new Line(values).setColor(color[0]).setCubic(true);
+//                            line[1] = new Line(values2).setColor(color[1]).setCubic(true);
+//                            line[2] = new Line(values3).setColor(color[2]).setCubic(true);
+//                            lines.add(line[0]);
+//                            lines.add(line[1]);
+//                            lines.add(line[2]);
+//                            generateData();
 
                         }
                     },
