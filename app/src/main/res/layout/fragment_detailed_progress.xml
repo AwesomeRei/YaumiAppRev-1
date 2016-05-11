@@ -3,28 +3,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.DetailedProgressFragment">
+
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/progressBar"
         android:layout_gravity="center_horizontal|center_vertical" />
-    <!-- TODO: Update blank fragment layout -->
-    <GridView
-        android:id="@+id/gridTarget"
-        android:padding="8dp"
-        android:layout_margin="8dp"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:numColumns="2"
-        android:gravity="center"
-        android:columnWidth="100dp"
-        android:horizontalSpacing="8dp"
-        android:verticalSpacing="8dp"
-        android:stretchMode="columnWidth"
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         >
 
-    </GridView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Progress yang telah kalian capai "
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:padding="16dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            >
+
+
+            <GridView
+                android:id="@+id/gridTarget"
+                android:padding="8dp"
+                android:layout_margin="8dp"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:numColumns="2"
+                android:gravity="center"
+                android:columnWidth="100dp"
+                android:horizontalSpacing="8dp"
+                android:verticalSpacing="8dp"
+                android:stretchMode="columnWidth"
+                android:layout_weight="2"
+                >
+
+            </GridView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- TODO: Update blank fragment layout -->
 
 
 </FrameLayout>
