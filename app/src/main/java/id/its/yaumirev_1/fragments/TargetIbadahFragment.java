@@ -61,15 +61,16 @@ public class TargetIbadahFragment extends Fragment {
     private Button button;
 
     private String[] idamal;
-    private String[] column;
+    private String[] cek;
     private String[] satuan;
     private String[] nilai;
-    private static String[] cek;
+    //private static String[] cek;
     private TargetAdapter profile;
 
     private LinearLayout llEnterTarget;
     private List<EditText> editTextList = new ArrayList<EditText>();
     private List<EditText> editTextList2 = new ArrayList<EditText>();
+    private List<EditText> editTextList3 = new ArrayList<EditText>();
     private List<TextView> textViewList = new ArrayList<TextView>();
     private AsyncTask test;
     int _intMyLineCount;
@@ -216,7 +217,7 @@ public class TargetIbadahFragment extends Fragment {
             public void onClick(View v) {
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                layoutParams.setMargins(30, 20, 30, 0);
+                layoutParams.setMargins(4, 0, 4, 0);
                 llEnterTarget.addView(linearlayout(_intMyLineCount),layoutParams);
                 _intMyLineCount++;
             }
@@ -228,7 +229,7 @@ public class TargetIbadahFragment extends Fragment {
     private EditText editText(int _intID) {
         EditText editText = new EditText(getActivity());
         LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,1);
-        lparams.setMargins(4,0,4,0);
+        lparams.setMargins(0,0,0,0);
         editText.setId(_intID);
         editText.setHint("Tulis Disini");
 //        editText.setWidth(300);
@@ -240,13 +241,25 @@ public class TargetIbadahFragment extends Fragment {
     }
     private EditText editText2(int _intID) {
         EditText editText = new EditText(getActivity());
-        LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,2);
-        lparams.setMargins(4,0,4,0);
+        LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,1);
+        lparams.setMargins(0, 0, 0, 0);
         editText.setId(_intID);
         editText.setHint("Target apa ");
 //        editText.setWidth(400);
         editText.setBackgroundColor(Color.WHITE);
         editTextList2.add(editText);
+
+        return editText;
+    }
+    private EditText editText3(int _intID) {
+        EditText editText = new EditText(getActivity());
+        LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,1);
+        lparams.setMargins(0,0,0,0);
+        editText.setId(_intID);
+        editText.setHint("Satuan ");
+//        editText.setWidth(400);
+        editText.setBackgroundColor(Color.WHITE);
+        editTextList3.add(editText);
 
         return editText;
     }
@@ -270,9 +283,11 @@ public class TargetIbadahFragment extends Fragment {
 //                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 //        layoutParams.setMargins(0, 8,0 , 0);
 //        LLMain.addView(textView(_intID));
-        LLMain.addView(editText2(_intID));
         LLMain.addView(editText(_intID));
 
+
+        LLMain.addView(editText2(_intID));
+        LLMain.addView(editText3(_intID));
         LLMain.setOrientation(LinearLayout.HORIZONTAL);
         //linearlayoutList.add(LLMain);
         return LLMain;
@@ -288,7 +303,7 @@ public class TargetIbadahFragment extends Fragment {
                 String url = null;
                 String[] datamu;
 
-                url = "http://10.151.33.33:8080/yaumiWS/rest/yaumi/today/add";
+                url = "http://10.151.33.33:8080/yaumiWS/rest/yaumi/target/add";
 
 //                datamu = new String[profile.getCount()];
 //                datamu = rcAdapter.getAll();
@@ -298,12 +313,14 @@ public class TargetIbadahFragment extends Fragment {
                 for (int i=0;i<profile.getCount();i++){
                     Log.d("Value",profile.getItemInput(i));
                 }
+
                 JSONArray arr = new JSONArray();
                 for (int i=0;i<profile.getCount();i++) {
+                    Log.d("ADD", profile.getItemInput(i));
                     try {
                         JSONObject obj = new JSONObject();
                         obj.put("idamal", idamal[i]);
-                        obj.put("namaamal", column[i]);
+                        obj.put("namaamal", cek[i]);
                         obj.put("value", profile.getItemInput(i));
                         obj.put("satuan", satuan[i]);
                         arr.put(obj);
@@ -313,6 +330,28 @@ public class TargetIbadahFragment extends Fragment {
                         e.printStackTrace();
                     }
                 }
+
+                for (int i=0; i< editTextList.size();i++) {
+                    Log.i("Edit Text",editTextList.get(i).getText().toString());
+                    try {
+                        JSONObject obj = new JSONObject();
+                        obj.put("idamal", 0);
+                        obj.put("namaamal", editTextList.get(i).getText().toString());
+                        obj.put("value", editTextList2.get(i).getText().toString());
+                        obj.put("satuan", editTextList3.get(i).getText().toString());
+                        arr.put(obj);
+                    }
+                    catch (JSONException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+//                    sb.append(editText.getText().toString());
+//                    sb.append("\n");
+//                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>" + sb)
+                }
+
+
+                Log.d("ADD", "SUKSES");
 
                 final String requestBody = arr.toString();
                 StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -395,21 +434,7 @@ public class TargetIbadahFragment extends Fragment {
 //
 //                }
 
-                for (EditText editText : editTextList) {
-                    Log.i("Edit Text",editText.getText().toString());
-//                    sb.append(editText.getText().toString());
-//                    sb.append("\n");
-//                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>" + sb);
 
-                }
-                for (EditText editText : editTextList2) {
-
-                    Log.i("Edit Text",editText.getText().toString());
-//                    sm.append(editText.getText().toString());
-//                    sm.append("\n");
-//                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>" + sm);
-
-                }
 
 //                long count = dbHandler.getDataCount();
 //                Log.i("Jumlah Data", String.valueOf(count));
