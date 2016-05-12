@@ -38,6 +38,10 @@ import lecho.lib.hellocharts.view.LineChartView;
  */
 public class ChartProgressFragment extends Fragment {
 
+    int[] color = {
+            Color.BLUE,Color.RED,Color.YELLOW,Color.BLACK,Color.GREEN,Color.WHITE
+    };
+
     private LineChartView chart;
     private LineChartData data;
     private int numberOfLines = 1;
@@ -45,11 +49,6 @@ public class ChartProgressFragment extends Fragment {
     private int numberOfPoints = 12;
 
     float[][] randomNumbersTab = new float[maxNumberOfLines][numberOfPoints];
-
-    float[][] randomNumbersTab2 = new float[maxNumberOfLines][numberOfPoints];
-    int[] color = {
-            Color.BLUE,Color.RED,Color.YELLOW,Color.BLACK,Color.GREEN,Color.WHITE
-    };
 
     private boolean hasAxes = true;
     private boolean hasAxesNames = true;
@@ -61,17 +60,13 @@ public class ChartProgressFragment extends Fragment {
     private boolean isCubic = false;
     private boolean hasLabelForSelected = false;
     private boolean pointsHaveDifferentColor;
-    private AsyncTask test;
-    private Tanggal tgl;
-    private Amal amal;
-    private List<PointValue> values;
-    private List<PointValue> values2;
-    private List<PointValue> values3;
-    private ArrayList<List<PointValue>> manyValues;
-    private Line[] line;
-    private List<Line> lines;
     private int max;
-
+    private int max2;
+    private int valueYMax;
+    private int valueXMax;
+    private int[][][] point;
+    private int[][] tanggal;
+    private AsyncTask test;
 
     public ChartProgressFragment() {
     }
@@ -92,11 +87,10 @@ public class ChartProgressFragment extends Fragment {
         chart = (LineChartView) rootView.findViewById(R.id.chart);
         chart.setOnValueTouchListener(new ValueTouchListener());
 //        values = new ArrayList<PointValue>();
-        manyValues = new ArrayList<List<PointValue>>();
-        test = new FetchData().execute("Ok");
+//        test = new FetchData().execute("Ok");
         // Generate some random values.
-
-        generateData();
+        test = new FetchData().execute("Ok");
+//        generateData();
 
         // Disable viewport recalculations, see toggleCubic() method for more info.
         chart.setViewportCalculationEnabled(false);
@@ -106,9 +100,6 @@ public class ChartProgressFragment extends Fragment {
         return rootView;
     }
 
-    private class TwoDimensionalArrayList<T> extends ArrayList<ArrayList>{
-
-    }
     private class FetchData extends AsyncTask<String,Integer,Double> {
 
         @Override
@@ -118,93 +109,71 @@ public class ChartProgressFragment extends Fragment {
                     new Response.Listener<IbadahHarian>() {
                         @Override
                         public void onResponse(IbadahHarian response) {
+                            Tanggal tgl;
+                            Amal amal;
 
-                            lines = new ArrayList<Line>();
+
+//                            lines = new ArrayList<Line>();
 //                            String[] nama = new String[response.getTgl().get(0).getAmal().size()];
                             String[] nama=null;
-                            int max = 0;
+                            max = 0;
+                            max2 = 0;
+                            valueYMax = 0;
+                            valueXMax = 0;
 
                             for (int i=0;i<response.getTgl().size();i++){
                                 tgl = response.getTgl().get(i);
+                                if (valueXMax < Integer.parseInt(tgl.getIdtgl()) )
+                                {
+                                    valueXMax = Integer.parseInt(tgl.getIdtgl());
+                                }
                                 nama = new String[tgl.getAmal().size()];
                                 max = tgl.getAmal().size();
                                 for (int j=0;j<tgl.getAmal().size();j++){
                                     amal = tgl.getAmal().get(j);
+                                    if (valueYMax < Integer.parseInt(amal.getValue())){
+                                        valueYMax = Integer.parseInt(amal.getValue());
+                                    }
                                     nama[j] =  amal.getNamaamal();
                                 }
                             }
+                            max2 = response.getTgl().size();
+                            tanggal = new int[max][response.getTgl().size()];
+                            point = new int[max][response.getTgl().size()][response.getTgl().size()];
                             Log.d("Max: ", String.valueOf(max));
-
-                            line = new Line[max];
+//
+//                            line = new Line[max];
+//                            values = new ArrayList<PointValue>();
                             for (int x=0;x<max;x++){
                                 Log.d("Nama: ",nama[x]);
-                                values = new ArrayList<PointValue>();
+//                                values = new ArrayList<PointValue>();
                                 for (int i=0;i<response.getTgl().size();i++){
                                     tgl = response.getTgl().get(i);
 
                                     for (int j=0;j<tgl.getAmal().size();j++){
                                         amal = tgl.getAmal().get(j);
                                         if (nama[x].equals(amal.getNamaamal())){
-                                            Log.d("nama: ",amal.getNamaamal());
-                                            Log.d("ValuePoint: ",tgl.getIdtgl()+" "+amal.getValue());
-                                            values.add(new PointValue(Float.parseFloat(tgl.getIdtgl()),Float.parseFloat(amal.getValue())));
+//                                            Log.d("nama: ",amal.getNamaaml());
+//                                            Log.d("ValuePoint: ",tgl.getIdtgl()+" "+amal.getValue());
+                                            tanggal[x][i] = Integer.parseInt(tgl.getIdtgl());
+                                            point[x][i][j] = Integer.parseInt(amal.getValue());
+//                                            Log.d("Paint: ", tanggal[x][i]+" "+String.valueOf(point[x][i][j]));
+//                                            values.add(new PointValue(Float.parseFloat(tgl.getIdtgl()),Float.parseFloat(amal.getValue())));
                                         }
                                     }
                                 }
-                                Log.d("Something","+++++++++++++++++++++++++++");
-                                line[x] =new Line(values).setColor(color[x]).setCubic(true);
-                                Log.d("Line ", String.valueOf(line[x]));
-                                lines.add(line[x]);
-                            }
-                            Log.d("Lines ", String.valueOf(lines));
-                            generateData();
 
-//                            Log.d("Response: ",response.toString());
-//                            lines = new ArrayList<Line>();
-//                            values = new ArrayList<PointValue>();
-//                            values2 = new ArrayList<PointValue>();
-//                            values3 = new ArrayList<PointValue>();
-//                            max = response.getTgl().size();
-//                            for (int i=0;i<response.getTgl().size();i++){
-//                                tgl = response.getTgl().get(i);
-//                                Log.d("Tanggal: ", tgl.getIdtgl());
-////                                manyValues.add();
-//                                line = new Line[tgl.getAmal().size()];
-//                                for (int x=0;x<tgl.getAmal().size();x++){
-//
-//                                }
-//                                for (int j=0;j<tgl.getAmal().size();j++){
-//                                    amal = tgl.getAmal().get(j);
-//                                    if (amal.getNamaamal().equals("puasa")){
-//                                        values.add(new PointValue(i,Float.parseFloat(amal.getValue())));
-//                                        Log.d("Ini: puasa ==",amal.getNamaamal());
-////                                        manyValues.add(0,values);
-//                                    }else if (amal.getNamaamal().equals("Sholat Dhuha")){
-//                                        values2.add(new PointValue(i,Float.parseFloat(amal.getValue())));
-////                                        manyValues.add(1,values);
-//                                        Log.d("Ini: X ==",amal.getNamaamal());
-//                                    }else {
-//                                        values3.add(new PointValue(i,Float.parseFloat(amal.getValue())));
-//                                        Log.d("Ini: tahajjud == ",amal.getNamaamal());
-////                                        manyValues.add(2,values);
-//                                    }
-////                                    values.add(new PointValue(i,Float.parseFloat(amal.getValue())));
-////                                    line[j] = new Line().setColor(color[j]).setCubic(true);
-////                                    Log.d("Line ke- ", String.valueOf(j));
-////                                    Log.d("Value Amal: ", amal.getNamaamal());
-////                                    Log.d("Value Amal: ", amal.getValue());
-////                                    lines.add(line[j]);
-//                                }
-////                                Amal amal = tgl.getAmal();
-//                            }
-//
-//                            line[0] = new Line(values).setColor(color[0]).setCubic(true);
-//                            line[1] = new Line(values2).setColor(color[1]).setCubic(true);
-//                            line[2] = new Line(values3).setColor(color[2]).setCubic(true);
-//                            lines.add(line[0]);
-//                            lines.add(line[1]);
-//                            lines.add(line[2]);
+
+//                                Log.d("Something","+++++++++++++++++++++++++++");
+//                                line[x] =new Line(values).setColor(color[x]).setCubic(true);
+//                                Log.d("Line ", String.valueOf(line[x]));
+//                                lines.add(line[0]);
+                            }
+
+//                            Log.d("Lines ", String.valueOf(lines));
 //                            generateData();
+//                            =====================================
+
 
                         }
                     },
@@ -224,6 +193,7 @@ public class ChartProgressFragment extends Fragment {
         @Override
         protected void onPostExecute(Double aDouble) {
             super.onPostExecute(aDouble);
+            generateData();
 //            if(cek!=null)
 //            {
 ////                profile = new TargetAdapter(getContext(),cek);
@@ -236,15 +206,14 @@ public class ChartProgressFragment extends Fragment {
         }
     }
 
-    private void resetViewport(int max ) {
-        // Reset viewport height range to (0,100)
-        final Viewport v = new Viewport(chart.getMaximumViewport());
-        v.bottom = 0;
-        v.top = 10;
-        v.left = 0;
-        v.right = max + 2;
-        chart.setMaximumViewport(v);
-        chart.setCurrentViewport(v);
+
+
+    private void generateValues() {
+        for (int i = 0; i < maxNumberOfLines; ++i) {
+            for (int j = 0; j < numberOfPoints; ++j) {
+                randomNumbersTab[i][j] = (float) Math.random() * 100f;
+            }
+        }
     }
 
     private void reset() {
@@ -265,18 +234,55 @@ public class ChartProgressFragment extends Fragment {
         resetViewport(max);
     }
 
+    private void resetViewport(int max) {
+        // Reset viewport height range to (0,100)
+        final Viewport v = new Viewport(chart.getMaximumViewport());
+        v.bottom = 0;
+        v.top = valueYMax + 10;
+        v.left = 0;
+        v.right = valueXMax + 10;
+        chart.setMaximumViewport(v);
+        chart.setCurrentViewport(v);
+    }
+
     private void generateData() {
 
+        List<Line> lines = new ArrayList<Line>();
+        Line[] line=new Line[max] ;
 
-        LineChartData data = new LineChartData();
-        data.setLines(lines);
+        for (int x = 0; x < max; ++x) {
+
+            List<PointValue> values = new ArrayList<PointValue>();
+            for (int i = 0; i < max2; ++i) {
+                for (int j =0 ;j<max;j++){
+//                    Log.d("Values: ",tanggal[x][i]+" "+point[x][i][j]);
+                    values.add(new PointValue(tanggal[x][i], point[x][i][j]));
+                }
+            }
+            line[x] = new Line(values);
+//            Line line = new Line(values);
+            line[x].setColor(ChartUtils.COLORS[x]);
+            line[x].setShape(shape);
+            line[x].setCubic(isCubic);
+            line[x].setFilled(isFilled);
+            line[x].setHasLabels(hasLabels);
+            line[x].setHasLabelsOnlyForSelected(hasLabelForSelected);
+            line[x].setHasLines(hasLines);
+            line[x].setHasPoints(hasPoints);
+            if (pointsHaveDifferentColor){
+                line[x].setPointColor(ChartUtils.COLORS[(x + 1) % ChartUtils.COLORS.length]);
+            }
+            lines.add(line[x]);
+        }
+
+        data = new LineChartData(lines);
 
         if (hasAxes) {
-            Axis axisX = new Axis().setHasLines(true).setTextColor(ChartUtils.COLOR_RED);
-            Axis axisY = new Axis().setHasLines(true).setTextColor(ChartUtils.COLOR_RED);
+            Axis axisX = new Axis().setTextColor(Color.WHITE);
+            Axis axisY = new Axis().setHasLines(true).setTextColor(Color.WHITE);
             if (hasAxesNames) {
                 axisX.setName("Tanggal");
-                axisY.setName("Jumlah Ibadah yang dilakukan");
+                axisY.setName("Jumlah Ibadah");
             }
             data.setAxisXBottom(axisX);
             data.setAxisYLeft(axisY);
@@ -286,12 +292,14 @@ public class ChartProgressFragment extends Fragment {
         }
 
         data.setBaseValue(Float.NEGATIVE_INFINITY);
-//
-//        LineChartView chart = new LineChartView(context);
         chart.setLineChartData(data);
 
     }
 
+    /**
+     * Adds lines to data, after that data should be set again with
+     * {@link LineChartView#setLineChartData(LineChartData)}. Last 4th line has non-monotonically x values.
+     */
     private void addLineToData() {
         if (data.getLines().size() >= maxNumberOfLines) {
             Toast.makeText(getActivity(), "Samples app uses max 4 lines!", Toast.LENGTH_SHORT).show();
