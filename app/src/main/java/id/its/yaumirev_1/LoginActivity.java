@@ -182,7 +182,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-
+        Log.d("LOGIN", email + ";" + password);
         boolean cancel = false;
         View focusView = null;
 
@@ -350,45 +350,43 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 //                    Log.d("Value",rcAdapter.getItem(i));
 ////                }
 //                JSONArray arr = new JSONArray();
-//                try{
-//                    JSONObject obj = new JSONObject();
-//                    obj.put("username", mEmail);
-//                    obj.put("password", mPassword);
-//                    arr.put(obj);
+                JSONObject obj = new JSONObject();
+                try{
+                    obj.put("username", mEmail);
+                    obj.put("password", mPassword);
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
 //
-//                }catch (JSONException e){
-//                    e.printStackTrace();
-//                }
+                final String requestBody = obj.toString();
+                StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
 //
-//                final String requestBody = arr.toString();
-//                StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-//
-//                    @Override
-//                    public void onResponse(String response) {
-//                        Log.d("Return Message : ",response.toString());
-//                    }
-//                }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Log.d("error", error.toString());
-//                    }
-//                }){
-//                    @Override
-//                    public String getBodyContentType() {
-//                        return String.format("application/json; charset=utf-8");
-//                    }
-//                    @Override
-//                    public byte[] getBody() throws AuthFailureError {
-//                        try {
-//                            return requestBody == null ? null : requestBody.getBytes("utf-8");
-//                        } catch (UnsupportedEncodingException uee) {
-//                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
-//                                    requestBody, "utf-8");
-//                            return null;
-//                        }
-//                    }
-//                };
-//                MySingleton.getInstance(getApplication()).addToRequestQueue(sr);
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Return Message : ",response.toString());
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("error", error.toString());
+                    }
+                }){
+                    @Override
+                    public String getBodyContentType() {
+                        return String.format("application/json; charset=utf-8");
+                    }
+                    @Override
+                    public byte[] getBody() throws AuthFailureError {
+                        try {
+                            return requestBody == null ? null : requestBody.getBytes("utf-8");
+                        } catch (UnsupportedEncodingException uee) {
+                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                                    requestBody, "utf-8");
+                            return null;
+                        }
+                    }
+                };
+                MySingleton.getInstance(getApplication()).addToRequestQueue(sr);
 
                 // Simulate network access.
                 Thread.sleep(2000);
