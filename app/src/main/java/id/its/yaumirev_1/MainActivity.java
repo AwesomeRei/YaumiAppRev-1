@@ -60,15 +60,15 @@ public class MainActivity extends AppCompatActivity
         displayView(R.id.nav_input);
 
         session = new SessionManager();
-
-        logOut = (Button)findViewById(R.id.buttonLogOut);
-        logOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                session.setPreferences(MainActivity.this,"status","0");
-                finish();
-            }
-        });
+//
+//        logOut = (Button)findViewById(R.id.buttonLogOut);
+//        logOut.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                session.setPreferences(MainActivity.this,"status","0");
+//                finish();
+//            }
+//        });
 
 
     }
@@ -144,6 +144,11 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_target:
                 fragment = new TargetIbadahFragment();
 //                title ="Target Ibadah";
+                break;
+
+            case R.id.nav_logout:
+                session.setPreferences(MainActivity.this,"status","0");
+                finish();
                 break;
         }
 

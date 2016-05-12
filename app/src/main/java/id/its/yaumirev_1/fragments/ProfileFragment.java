@@ -12,6 +12,7 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
@@ -123,7 +124,7 @@ public class ProfileFragment extends Fragment {
         @Override
         protected Double doInBackground(String... params) {
             String url = "http://10.151.33.33:8080/yaumiWS/rest/yaumi/progress";
-            GsonRequest jsObjRequest = new GsonRequest(url,Ibadah.class,null,
+            GsonRequest jsObjRequest = new GsonRequest(Request.Method.GET,url,Ibadah.class,null,
                     new Response.Listener<Ibadah>() {
                         @Override
                         public void onResponse(Ibadah response) {

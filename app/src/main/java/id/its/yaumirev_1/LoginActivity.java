@@ -325,7 +325,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * the user.
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
+        private String notif;
         private final String mEmail;
         private final String mPassword;
 
@@ -341,15 +341,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             try {
                 String url = "http://10.151.33.33:8080/yaumiWS/rest/yaumi/login";
 
-//                datamu = new String[rcAdapter.getItemCount()];
-//                datamu = rcAdapter.getAll();
-
-//                Ibadah inputku = new Ibadah();
-//                final List<Amal> amalanku = new ArrayList<Amal>();
-//                for (int i=0;i<rcAdapter.getItemCount();i++){
-//                    Log.d("Value",rcAdapter.getItem(i));
-////                }
-//                JSONArray arr = new JSONArray();
                 JSONObject obj = new JSONObject();
                 try{
                     obj.put("username", mEmail);
@@ -359,11 +350,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
 //
                 final String requestBody = obj.toString();
-                StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-//
+                GsonRequest js = new GsonRequest(Request.Method.POST,url,Login.class,null, new Response.Listener<Login>() {
                     @Override
-                    public void onResponse(String response) {
-                        Log.d("Return Message : ",response.toString());
+                    public void onResponse(Login response) {
+                        Log.d("Notif",response.getNotif());
+                        Log.d("NRP",response.getNrp());
+                        Log.d("Nama",response.getNama());
+                        notif = response.getNotif();
+
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -385,8 +379,38 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             return null;
                         }
                     }
+
                 };
-                MySingleton.getInstance(getApplication()).addToRequestQueue(sr);
+//                StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+////
+//                    @Override
+//                    public void onResponse(String response) {
+//                        Log.d("Return Message : ",response.toString());
+//
+//                    }
+//                }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.d("error", error.toString());
+//                    }
+//                }){
+//                    @Override
+//                    public String getBodyContentType() {
+//                        return String.format("application/json; charset=utf-8");
+//                    }
+//                    @Override
+//                    public byte[] getBody() throws AuthFailureError {
+//                        try {
+//                            return requestBody == null ? null : requestBody.getBytes("utf-8");
+//                        } catch (UnsupportedEncodingException uee) {
+//                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+//                                    requestBody, "utf-8");
+//                            return null;
+//                        }
+//                    }
+//                };
+                MySingleton.getInstance(getApplication()).addToRequestQueue(js);
+//                MySingleton.getInstance(getApplication()).addToRequestQueue(sr);
 
                 // Simulate network access.
                 Thread.sleep(2000);
@@ -401,9 +425,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     return pieces[1].equals(mPassword);
                 }
             }
+            if (notif.equals("sukses"))
+            {
+                return true;
+            }
+            else {
+                return false;
+            }
 
             // TODO: register the new account here.
-            return true;
+//            return true;
         }
 
         @Override

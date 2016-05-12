@@ -151,7 +151,7 @@ public class TargetIbadahFragment extends Fragment {
         protected Double doInBackground(String... params) {
 //            String url = "https://api.myjson.com/bins/3x1tk";
             String url = "http://10.151.33.33:8080/yaumiWS/rest/yaumi/target";
-            GsonRequest jsObjRequest = new GsonRequest(url,Ibadah.class,null,
+            GsonRequest jsObjRequest = new GsonRequest(Request.Method.GET,url,Ibadah.class,null,
                     new Response.Listener<Ibadah>() {
                         @Override
                         public void onResponse(Ibadah response) {
