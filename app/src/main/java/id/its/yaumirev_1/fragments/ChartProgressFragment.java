@@ -2,6 +2,7 @@ package id.its.yaumirev_1.fragments;
 
 
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import id.its.yaumirev_1.Amal;
@@ -24,6 +26,7 @@ import id.its.yaumirev_1.IbadahHarian;
 import id.its.yaumirev_1.MySingleton;
 import id.its.yaumirev_1.R;
 import id.its.yaumirev_1.Tanggal;
+import id.its.yaumirev_1.TwoDimentionalArrayList;
 import lecho.lib.hellocharts.animation.ChartAnimationListener;
 import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
@@ -87,11 +90,9 @@ public class ChartProgressFragment extends Fragment {
 
         chart = (LineChartView) rootView.findViewById(R.id.chart);
         chart.setOnValueTouchListener(new ValueTouchListener());
-//        values = new ArrayList<PointValue>();
-//        test = new FetchData().execute("Ok");
+
         // Generate some random values.
         test = new FetchData().execute("Ok");
-//        generateData();
 
         // Disable viewport recalculations, see toggleCubic() method for more info.
         chart.setViewportCalculationEnabled(false);
@@ -146,7 +147,7 @@ public class ChartProgressFragment extends Fragment {
 //                            line = new Line[max];
 //                            values = new ArrayList<PointValue>();
                             for (int x=0;x<max;x++){
-                                Log.d("Nama: ",nama[x]);
+//                                Log.d("Nama: ",nama[x]);
 //                                values = new ArrayList<PointValue>();
                                 for (int i=0;i<response.getTgl().size();i++){
                                     tgl = response.getTgl().get(i);
@@ -154,7 +155,7 @@ public class ChartProgressFragment extends Fragment {
                                     for (int j=0;j<tgl.getAmal().size();j++){
                                         amal = tgl.getAmal().get(j);
                                         if (nama[x].equals(amal.getNamaamal())){
-//                                            Log.d("nama: ",amal.getNamaaml());
+//                                            Log.d("nama: ",amal.getNamaamal());
 //                                            Log.d("ValuePoint: ",tgl.getIdtgl()+" "+amal.getValue());
                                             tanggal[x][i] = Integer.parseInt(tgl.getIdtgl());
                                             point[x][i][j] = Integer.parseInt(amal.getValue());
@@ -239,9 +240,9 @@ public class ChartProgressFragment extends Fragment {
         // Reset viewport height range to (0,100)
         final Viewport v = new Viewport(chart.getMaximumViewport());
         v.bottom = 0;
-        v.top = valueYMax + 10;
+        v.top = valueYMax + 2;
         v.left = 0;
-        v.right = valueXMax + 10;
+        v.right = valueXMax + 2;
         chart.setMaximumViewport(v);
         chart.setCurrentViewport(v);
     }
@@ -250,17 +251,51 @@ public class ChartProgressFragment extends Fragment {
 
         List<Line> lines = new ArrayList<Line>();
         Line[] line=new Line[max] ;
-
+        List<ArrayList<PointValue>> value = new ArrayList<ArrayList<PointValue>>();
+        for (int x=0;x<max;x++){
+            value.add(new ArrayList<PointValue>());
+        }
+//        TwoDimentionalArrayList<PointValue> value = new TwoDimentionalArrayList<PointValue>();
+        int y =0;
+        int flag[] = new int[31];
         for (int x = 0; x < max; ++x) {
+            y=0;
+//            flag = new int[31];
+            Arrays.fill(flag,0);
 
-            List<PointValue> values = new ArrayList<PointValue>();
             for (int i = 0; i < max2; ++i) {
+                int poin = 0;
                 for (int j =0 ;j<max;j++){
-//                    Log.d("Values: ",tanggal[x][i]+" "+point[x][i][j]);
-                    values.add(new PointValue(tanggal[x][i], point[x][i][j]));
+
+                    if (point[x][i][j]>0){
+                        poin = point[x][i][j];
+                    }
+                    else {
+                        poin = point[x][i][j];
+                    }
+//                    value.get(x).add(y, new PointValue(tanggal[x][i],poin));
+//                        flag[tanggal[x][i]] = -1;
+//                    y++;
+//                    List<PointValue> values = new ArrayList<PointValue>();
+                    Log.d("Point : ",x+" "+tanggal[x][i]+" "+point[x][i][j]);
+                    if (point[x][i][j]!=0 && flag[tanggal[x][i]]==0 ) {
+                        Log.d("Point : ",x+" "+flag[tanggal[x][i]]+" "+tanggal[x][i]+" "+point[x][i][j]);
+                        value.get(x).add(y, new PointValue(tanggal[x][i], point[x][i][j]));
+                        flag[tanggal[x][i]] = -1;
+                        y++;
+                    }
                 }
+                if (flag[tanggal[x][i]]!=-1){
+//                    Log.d("Point : ",x+" "+flag[tanggal[x][i]]+" "+tanggal[x][i]+" "+point[x][i][j]);
+                    value.get(x).add(y, new PointValue(tanggal[x][i],0));
+                    flag[tanggal[x][i]] = -1;
+                    y++;
+                }
+//                value.get(x).add(y, new PointValue(tanggal[x][i],poin));
+//                y++;
+
             }
-            line[x] = new Line(values);
+            line[x] = new Line(value.get(x));
 //            Line line = new Line(values);
             line[x].setColor(ChartUtils.COLORS[x]);
             line[x].setShape(shape);
@@ -469,4 +504,5 @@ public class ChartProgressFragment extends Fragment {
         }
 
     }
+
 }

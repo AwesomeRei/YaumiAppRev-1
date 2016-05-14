@@ -182,7 +182,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-        Log.d("LOGIN", email + ";" + password);
+//        Log.d("LOGIN", email + ";" + password);
         boolean cancel = false;
         View focusView = null;
 
@@ -326,6 +326,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         private String notif;
+        private String user;
+        private String nrp;
         private final String mEmail;
         private final String mPassword;
 
@@ -357,6 +359,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         Log.d("NRP",response.getNrp());
                         Log.d("Nama",response.getNama());
                         notif = response.getNotif();
+                        user = response.getNama();
+                        nrp = response.getNrp();
 
                     }
                 }, new Response.ErrorListener() {
@@ -381,37 +385,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
 
                 };
-//                StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-////
-//                    @Override
-//                    public void onResponse(String response) {
-//                        Log.d("Return Message : ",response.toString());
-//
-//                    }
-//                }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Log.d("error", error.toString());
-//                    }
-//                }){
-//                    @Override
-//                    public String getBodyContentType() {
-//                        return String.format("application/json; charset=utf-8");
-//                    }
-//                    @Override
-//                    public byte[] getBody() throws AuthFailureError {
-//                        try {
-//                            return requestBody == null ? null : requestBody.getBytes("utf-8");
-//                        } catch (UnsupportedEncodingException uee) {
-//                            VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
-//                                    requestBody, "utf-8");
-//                            return null;
-//                        }
-//                    }
-//                };
-                MySingleton.getInstance(getApplication()).addToRequestQueue(js);
-//                MySingleton.getInstance(getApplication()).addToRequestQueue(sr);
-
                 // Simulate network access.
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -444,6 +417,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success) {
                 manager.setPreferences(LoginActivity.this,"status","1");
+                manager.setPreferences(LoginActivity.this,"user",user);
+                manager.setPreferences(LoginActivity.this,"nrp",nrp);
                 finish();
                 Intent myIntent = new Intent(LoginActivity.this,MainActivity.class);
                 LoginActivity.this.startActivity(myIntent);

@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_profile:
                 fragment = new ProfileFragment();
-//                title = "Events";
+//                title = "Profil";
                 break;
             case R.id.nav_target:
                 fragment = new TargetIbadahFragment();
@@ -148,6 +148,10 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.nav_logout:
                 session.setPreferences(MainActivity.this,"status","0");
+                session.setPreferences(MainActivity.this,"user","0");
+                session.setPreferences(MainActivity.this,"nrp","0");
+                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                startActivity(intent);
                 finish();
                 break;
         }
@@ -158,10 +162,6 @@ public class MainActivity extends AppCompatActivity
             ft.commit();
         }
 
-        // set the toolbar title
-//        if (getSupportActionBar() != null) {
-//            getSupportActionBar().setTitle(title);
-//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

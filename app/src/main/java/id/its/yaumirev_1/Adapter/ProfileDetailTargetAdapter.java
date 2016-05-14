@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import id.its.yaumirev_1.R;
+import lecho.lib.hellocharts.util.ChartUtils;
 
 /**
  * Created by Zachary on 4/10/2016.
@@ -58,21 +59,16 @@ public class ProfileDetailTargetAdapter extends BaseAdapter {
         if (convertView == null){
             gridView = new View(context);
             gridView = inflater.inflate(R.layout.grid_detail,null);
-//            gridView = inflater.inflate(R.layout.grid_detail_input,null);
-
-//            TextView textView = (TextView) gridView.findViewById(R.id.textViewInput);
-//            textView.setText(mobileValues[position]);
-
             TextView textView = (TextView) gridView.findViewById(R.id.targetDescription);
             textView.setText(mobileValues[position]);
 
             View recView =(View)gridView.findViewById(R.id.myRectangleView);
-            recView.setBackgroundColor(color[position]);
+            recView.setBackgroundColor(ChartUtils.COLORS[position]);
 //            textView.setTextColor(color[position]);
 
 
             TextView textView2 = (TextView) gridView.findViewById(R.id.targetPercentage);
-            textView2.setText(targetPercent[position]);
+            textView2.setText(targetPercent[position]+"%");
 
             TextView textView3 = (TextView) gridView.findViewById(R.id.textView3);
             textView3.setText(satuan[position]);

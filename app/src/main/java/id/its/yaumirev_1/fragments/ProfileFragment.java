@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -20,10 +21,12 @@ import id.its.yaumirev_1.Adapter.ProfileDetailTargetAdapter;
 import id.its.yaumirev_1.Amal;
 import id.its.yaumirev_1.GsonRequest;
 import id.its.yaumirev_1.Ibadah;
+import id.its.yaumirev_1.MainActivity;
 import id.its.yaumirev_1.MyDBHandler;
 import id.its.yaumirev_1.MySingleton;
 import id.its.yaumirev_1.R;
 import id.its.yaumirev_1.ReadFileJSON;
+import id.its.yaumirev_1.SessionManager;
 
 
 /**
@@ -64,6 +67,11 @@ public class ProfileFragment extends Fragment {
     private AsyncTask test;
     private ProgressBar mProgress;
     private LinearLayout linearLayout;
+    private TextView name;
+    private TextView nrp;
+
+    SessionManager manager;
+
 
 //    private OnFragmentInteractionListener mListener;
 
@@ -103,20 +111,17 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+        manager = new SessionManager();
         linearLayout = (LinearLayout)rootView.findViewById(R.id.linearLayoutTarget);
         linearLayout.setVisibility(View.GONE);
         gridView =(GridView)rootView.findViewById(R.id.gridTarget);
         mProgress = (ProgressBar) rootView.findViewById(R.id.progressBar);
         test = new FetchData().execute("Ok");
+        name = (TextView) rootView.findViewById(R.id.name);
+        nrp = (TextView) rootView.findViewById(R.id.some);
+        name.setText(manager.getPreferences(getActivity(),"user"));
+        nrp.setText(manager.getPreferences(getActivity(),"nrp"));
 
-//        gridView.setAdapter(new ProfileDetailTargetAdapter(this.getActivity(),DESCRIPTION,DESCIPTION_VALUES,color));
-//
-//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-////                Toast.makeText(this.getActivity(),((TextView) view.findViewById(R.id.targetPercentage)).getText(),Toast.LENGTH_SHORT).show();
-//            }
-//        });
         return rootView;
     }
     private class FetchData extends AsyncTask<String,Integer,Double> {
@@ -164,15 +169,8 @@ public class ProfileFragment extends Fragment {
         @Override
         protected void onPostExecute(Double aDouble) {
             super.onPostExecute(aDouble);
-//            if(cek!=null)
-//            {
-////                profile = new TargetAdapter(getContext(),cek);
-////                listView.setAdapter(profile);
-////                listView.setVisibility(View.VISIBLE);
-////                Log.d("masuk", "null");
-//            }
+
             Log.d("masuk", "gak null");
-//            Log.d("status async2-->", test.getStatus().toString());
         }
     }
     // TODO: Rename method, update argument and hook method into UI event
