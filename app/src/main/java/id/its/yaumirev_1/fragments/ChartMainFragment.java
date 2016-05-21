@@ -26,7 +26,7 @@ public class ChartMainFragment extends Fragment {
         mTabHost.setup(this.getContext(), getChildFragmentManager(), android.R.id.tabcontent);
 
         mTabHost.addTab(
-                mTabHost.newTabSpec("Chart1").setIndicator("Chart 1", null),
+                mTabHost.newTabSpec("Grafik").setIndicator("Grafik", null),
                 ChartProgressFragment.class, null);
 //        mTabHost.addTab(
 //                mTabHost.newTabSpec("tab3").setIndicator("Tab 3", null),

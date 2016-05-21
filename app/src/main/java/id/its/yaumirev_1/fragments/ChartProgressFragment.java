@@ -277,9 +277,9 @@ public class ChartProgressFragment extends Fragment {
 //                        flag[tanggal[x][i]] = -1;
 //                    y++;
 //                    List<PointValue> values = new ArrayList<PointValue>();
-                    Log.d("Point : ",x+" "+tanggal[x][i]+" "+point[x][i][j]);
+//                    Log.d("Point : ",x+" "+tanggal[x][i]+" "+point[x][i][j]);
                     if (point[x][i][j]!=0 && flag[tanggal[x][i]]==0 ) {
-                        Log.d("Point : ",x+" "+flag[tanggal[x][i]]+" "+tanggal[x][i]+" "+point[x][i][j]);
+//                        Log.d("Point : ",x+" "+flag[tanggal[x][i]]+" "+tanggal[x][i]+" "+point[x][i][j]);
                         value.get(x).add(y, new PointValue(tanggal[x][i], point[x][i][j]));
                         flag[tanggal[x][i]] = -1;
                         y++;

@@ -22,19 +22,27 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private String[] dataBefore;
     private String[] data;
     private String[] satuan;
+    private int viewType;
 
-    public RecyclerViewAdapter(Context context,String[] item,String[] dataBefore,String[] satuan){
+    public RecyclerViewAdapter(Context context, String[] item, String[] dataBefore, String[] satuan, int viewType){
         this.itemList = item;
         this.context = context;
         this.dataBefore = dataBefore;
         this.data = new String[item.length];
         this.data = dataBefore;
         this.satuan = satuan;
+        this.viewType = viewType;
     }
 
     @Override
     public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_detail_input,null);
+        if (this.viewType == 1){
+            layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_detail_input,null);
+        }
+        else if (this.viewType == 2){
+            layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_detail_input,null);
+        }
         RecyclerViewHolders rcv= new RecyclerViewHolders(layoutView,new MyCustomEditTextListener());
         return rcv;
     }

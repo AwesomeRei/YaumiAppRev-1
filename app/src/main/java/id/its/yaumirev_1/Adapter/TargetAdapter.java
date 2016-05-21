@@ -16,15 +16,17 @@ import id.its.yaumirev_1.R;
 public class TargetAdapter extends BaseAdapter {
     private Context context;
     private String[] mobileValues;
+    private String[] target;
 
     private String[] satuan = null;
     private EditText[] inputCollection;
 
-    public TargetAdapter(Context context, String[] mobileValues,String[] targetPercent) {
+    public TargetAdapter(Context context, String[] mobileValues,String[] target,String[] targetPercent) {
         this.context = context;
         this.mobileValues = mobileValues;
         inputCollection = new EditText[getCount()];
         this.satuan = targetPercent;
+        this.target = target;
     }
 
     @Override
@@ -56,23 +58,15 @@ public class TargetAdapter extends BaseAdapter {
 
             TextView textView = (TextView) gridView.findViewById(R.id.textViewInput);
             textView.setText(mobileValues[position]);
-            TextView textSatuan =(TextView) gridView.findViewById(R.id.textView4);
-            textSatuan.setText(satuan[position]);
-//            targetPercent[po] = editText.getText();
-
-//
-//            TextView textView = (TextView) gridView.findViewById(R.id.targetDescription);
-//            textView.setText(mobileValues[position]);
-
-
-//            TextView textView2 = (TextView) gridView.findViewById(R.id.targetPercentage);
-//            textView2.setText(targetPercent[position]);
+//            TextView textSatuan =(TextView) gridView.findViewById(R.id.textView4);
+//            textSatuan.setText(satuan[position]);
 
         }else {
             gridView = (View) convertView;
         }
 
         EditText editText = (EditText) gridView.findViewById(R.id.editTextInput);
+        editText.setText(target[position]);
         inputCollection[position] = editText;
 
         return gridView;

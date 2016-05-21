@@ -20,10 +20,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Progress yang telah kalian capai "
-            android:background="@color/colorPrimary"
-            android:textColor="@color/white"
+            android:text="Progress yang telah dicapai selama 1 bulan"
+            android:textStyle="bold"
+            android:textColor="@color/colorGreen"
             android:padding="16dp"
+            android:textAlignment="center"
             />
 
         <LinearLayout

@@ -1,10 +1,14 @@
 package id.its.yaumirev_1.fragments;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +20,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -33,6 +38,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.its.yaumirev_1.Adapter.RecyclerViewAdapter;
 import id.its.yaumirev_1.Adapter.TargetAdapter;
 import id.its.yaumirev_1.Amal;
 import id.its.yaumirev_1.GsonRequest;
@@ -80,6 +86,9 @@ public class TargetIbadahFragment extends Fragment {
     private Ibadah ib  ;
     private Amal amal;
     private List<Amal> amalan;
+    private RecyclerView mRecycler;
+    private GridLayoutManager lLayout;
+    private RecyclerViewAdapter rcAdapter;
     final Gson gson= new Gson();
 
     String url = null;
@@ -124,10 +133,12 @@ public class TargetIbadahFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_target_ibadah, container, false);
-        listView =(ListView) rootView.findViewById(R.id.listView1);
+//        listView =(ListView) rootView.findViewById(R.id.listView1);
         x =(ScrollView) rootView.findViewById(R.id.targetScroll);
         x.setVisibility(View.GONE);
         mProgress = (ProgressBar)rootView.findViewById(R.id.progressBar);
+        mRecycler = (RecyclerView)rootView.findViewById(R.id.mRecycler);
+        lLayout = new GridLayoutManager(getContext(),1);
         test = new FetchData().execute("Ok");
 
         displayAddTarget();
@@ -166,16 +177,19 @@ public class TargetIbadahFragment extends Fragment {
                                 nilai[i]= amalItem.getValue();
                                 satuan[i] =amalItem.getSatuan();
 //                                System.out.println("Response: "+ cek[i]);
-                                Log.d("idamal ",idamal[i]);
-                                Log.d("nama ",cek[i]);
-                                Log.d("nilai ",nilai[i]);
-                                Log.d("satuan ",satuan[i]);
+//                                Log.d("idamal ",idamal[i]);
+//                                Log.d("nama ",cek[i]);
+//                                Log.d("nilai ",nilai[i]);
+//                                Log.d("satuan ",satuan[i]);
                             }
+                            mRecycler.setLayoutManager(lLayout);
+                            rcAdapter = new RecyclerViewAdapter(getContext(),cek,nilai,satuan,1);
+                            mRecycler.setAdapter(rcAdapter);
                             mProgress.setVisibility(View.GONE);
                             x.setVisibility(View.VISIBLE);
-                            profile = new TargetAdapter(getContext(),cek,satuan);
-                            listView.setAdapter(profile);
-                            listView.setVisibility(View.VISIBLE);
+//                            profile = new TargetAdapter(getContext(),cek,nilai,satuan);
+//                            listView.setAdapter(profile);
+//                            listView.setVisibility(View.VISIBLE);
 
 
                         }
@@ -189,22 +203,14 @@ public class TargetIbadahFragment extends Fragment {
                     });
 
             MySingleton.getInstance(getActivity()).addToRequestQueue(jsObjRequest);
-            Log.d("status async", test.getStatus().toString());
+//            Log.d("status async", test.getStatus().toString());
             return null;
         }
 
         @Override
         protected void onPostExecute(Double aDouble) {
             super.onPostExecute(aDouble);
-            if(cek!=null)
-//            {
-//                profile = new TargetAdapter(getContext(),cek);
-//                listView.setAdapter(profile);
-//                listView.setVisibility(View.VISIBLE);
-                Log.d("masuk", "null");
-//            }
-//            Log.d("masuk", "gak null");
-//            Log.d("status async2-->", test.getStatus().toString());
+
         }
     }
 
@@ -279,10 +285,6 @@ public class TargetIbadahFragment extends Fragment {
         LinearLayout LLMain=new LinearLayout(getActivity());
         LLMain.setId(_intID);
 
-//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-//                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//        layoutParams.setMargins(0, 8,0 , 0);
-//        LLMain.addView(textView(_intID));
         LLMain.addView(editText(_intID));
 
 
@@ -310,18 +312,19 @@ public class TargetIbadahFragment extends Fragment {
 
                 Ibadah inputku = new Ibadah();
                 final List<Amal> amalanku = new ArrayList<Amal>();
-                for (int i=0;i<profile.getCount();i++){
-                    Log.d("Value",profile.getItemInput(i));
+//                for (int i=0;i<profile.getCount();i++){
+//                    Log.d("Value",profile.getItemInput(i));
+//                }
+                for (int i=0;i<rcAdapter.getItemCount();i++){
+                    Log.d("Value",rcAdapter.getItem(i));
                 }
-
                 JSONArray arr = new JSONArray();
-                for (int i=0;i<profile.getCount();i++) {
-                    Log.d("ADD", profile.getItemInput(i));
+                for (int i=0;i<rcAdapter.getItemCount();i++) {
                     try {
                         JSONObject obj = new JSONObject();
                         obj.put("idamal", idamal[i]);
                         obj.put("namaamal", cek[i]);
-                        obj.put("value", profile.getItemInput(i));
+                        obj.put("value", rcAdapter.getItem(i));
                         obj.put("satuan", satuan[i]);
                         arr.put(obj);
                     }
@@ -330,6 +333,7 @@ public class TargetIbadahFragment extends Fragment {
                         e.printStackTrace();
                     }
                 }
+
 
                 for (int i=0; i< editTextList.size();i++) {
                     Log.i("Edit Text",editTextList.get(i).getText().toString());
@@ -345,9 +349,6 @@ public class TargetIbadahFragment extends Fragment {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-//                    sb.append(editText.getText().toString());
-//                    sb.append("\n");
-//                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>" + sb)
                 }
 
 
@@ -383,63 +384,8 @@ public class TargetIbadahFragment extends Fragment {
                 };
                 MySingleton.getInstance(getActivity()).addToRequestQueue(sr);
 
-//                    inputku.setAmal(amalanku);
-                // Ready to implement dont know right or wrong
-
-
-
-//                for (int i=0;i<cek.length;i++){
-//                    Log.d("Nama: ",profile.getItemPosition(i));
-//                    Log.d("Inputan nya: ",profile.getItemInput(i));
-//                    Ibadah inputku = new Ibadah();
-//                    List<Amal> amalanku = new ArrayList<Amal>();
-//                    final Amal punyaku = new Amal();
-//                    punyaku.setIdamal(String.valueOf(i+1));
-//                    punyaku.setNamaamal(profile.getItemPosition(i));
-//                    punyaku.setValue(profile.getItemInput(i));
-//                    punyaku.setSatuan(satuan[i]);
-//                    amalanku.add(punyaku);
-//                    inputku.setAmal(amalanku);
-//                    // Ready to implement dont know right or wrong
-//                    StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-//
-//                        @Override
-//                        public void onResponse(String response) {
-//
-//                        }
-//                    }, new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//
-//                        }
-//                    }){
-//                        @Override
-//                        protected Map<String, String> getParams() {
-//                            Map<String,String> params = new HashMap<String, String>();
-//                            params.put("idamal",punyaku.getIdamal());
-//                            params.put("namaamal",punyaku.getNamaamal());
-//                            params.put("value",punyaku.getValue());
-//                            params.put("satuan",punyaku.getSatuan());
-//                            return params;
-//                        }
-//
-//                        @Override
-//                        public Map<String, String> getHeaders() throws AuthFailureError {
-//                            Map<String,String> params = new HashMap<String, String>();
-//                            params.put("Content-Type","application/x-www-form-urlencoded");
-//                            return params;
-//                        }
-//                    };
-//                    MySingleton.getInstance(getActivity()).addToRequestQueue(sr);
-//
-//                }
-
-
-
-//                long count = dbHandler.getDataCount();
-//                Log.i("Jumlah Data", String.valueOf(count));
-//                Toast.makeText(getActivity(),
-//                        (int) count, Toast.LENGTH_LONG).show();
+                Toast myToast = Toast.makeText(getContext(),"Sudah Disimpan",Toast.LENGTH_SHORT);
+                myToast.show();
 
             }
         });

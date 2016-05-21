@@ -325,7 +325,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * the user.
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-        private String notif;
+        private String notif = "gagal";
         private String user;
         private String nrp;
         private final String mEmail;
@@ -385,6 +385,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
 
                 };
+
+                MySingleton.getInstance(getApplication()).addToRequestQueue(js);
                 // Simulate network access.
                 Thread.sleep(2000);
             } catch (InterruptedException e) {

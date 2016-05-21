@@ -154,7 +154,7 @@ public class HaveYouDoneItFragment extends Fragment {
 //                            gridView.setAdapter(profile);
 //                            gridView.setVisibility(View.VISIBLE);
                             recyclerView.setLayoutManager(ilayout);
-                            rcAdapter = new RecyclerViewAdapter(getContext(),column,nilai,satuan);
+                            rcAdapter = new RecyclerViewAdapter(getContext(),column,nilai,satuan,1);
                             recyclerView.setAdapter(rcAdapter);
 
 
